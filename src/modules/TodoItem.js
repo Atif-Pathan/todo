@@ -10,12 +10,12 @@ class TodoItem {
     status = "incomplete",
   } = {}) {
     if (!title) {
-        throw new Error("Title is required for a TodoItem.");
+      throw new Error("Title is required for a TodoItem.");
     }
     this.id = uuidv4();
     this.title = title;
     this.description = description;
-    this.dueDate = dueDate ? new Date(dueDate) : null; 
+    this.dueDate = dueDate ? new Date(dueDate) : null;
     this.priority = priority;
     this.status = status;
     this.createdDate = new Date();
@@ -23,6 +23,10 @@ class TodoItem {
   }
 
   // Getters
+  getId() {
+    return this.id;
+  }
+
   getTitle() {
     return this.title;
   }
@@ -32,7 +36,7 @@ class TodoItem {
   }
 
   getDueDate() {
-    return this.dueDate ? formatISO(this.dueDate) : null; // Return as ISO string
+    return this.dueDate ? formatISO(this.dueDate) : null;
   }
 
   getPriority() {
@@ -44,11 +48,11 @@ class TodoItem {
   }
 
   getCreatedDate() {
-    return formatISO(this.createdDate); 
+    return formatISO(this.createdDate);
   }
 
   getUpdatedDate() {
-    return formatISO(this.updatedDate); 
+    return formatISO(this.updatedDate);
   }
 
   // Setters
@@ -77,7 +81,9 @@ class TodoItem {
   setPriority(newPriority) {
     const validPriorities = ["low", "medium", "high"];
     if (!validPriorities.includes(newPriority)) {
-      throw new Error("Priority must be 'low', 'medium', or 'high'.");
+      throw new Error(
+        "Priority must be 'low', 'medium', or 'high'."
+      );
     }
     this.priority = newPriority;
     this._updateTimestamp();
@@ -86,7 +92,9 @@ class TodoItem {
   setStatus(newStatus) {
     const validStatuses = ["incomplete", "complete", "overdue"];
     if (!validStatuses.includes(newStatus)) {
-      throw new Error("Status must be 'incomplete', 'complete', or 'overdue'.");
+      throw new Error(
+        "Status must be 'incomplete', 'complete', or 'overdue'."
+      );
     }
     this.status = newStatus;
     this._updateTimestamp();
@@ -115,7 +123,7 @@ class TodoItem {
     return this.dueDate && isBefore(this.dueDate, currentDate);
   }
 
-  // Private method to update the timestamp
+  // Private method to update the timestamp after each setter is called
   _updateTimestamp() {
     this.updatedDate = new Date();
   }
