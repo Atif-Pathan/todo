@@ -1,6 +1,6 @@
 import './styles.css';
 
-import Category from './modules/category';
+import Category from './modules/Category';
 import TodoItem from './modules/TodoItem';
 
 

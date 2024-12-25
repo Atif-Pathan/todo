@@ -6,9 +6,13 @@ class Category {
       throw new Error("Category name is required.");
     }
 
-    this.id = uuidv4();
-    this.name = name;
+    this._id = uuidv4();
+    this._name = name;
     this.todos = [];
+  }
+
+  getId() {
+    return this._id;
   }
 
   get name() {
@@ -24,8 +28,7 @@ class Category {
 
   addTodo(todo) {
     if (!todo || !todo.getId()) {
-      // We now use todo.getId() for consistency
-      throw new Error("Invalid TodoItem.");
+      throw new Error("Invalid TodoItem (no valid ID).");
     }
     this.todos.push(todo);
   }
@@ -79,12 +82,11 @@ class Category {
         if (dateA && dateB) {
           comparison = dateA - dateB;
         } else if (!dateA && dateB) {
-          // If one has no dueDate, decide how to handle it
           comparison = -1;
         } else if (dateA && !dateB) {
           comparison = 1;
         }
-        // If neither has dueDate, comparison stays 0
+        // If both are null, comparison = 0
       } else if (property === "priority") {
         const priorityOrder = { low: 1, medium: 2, high: 3 };
         comparison =
