@@ -240,11 +240,15 @@ ul[role="list"] {
   text-decoration: underline;
 }
 
-.tasks {
+.tasks, .categories {
   display: flex;
   flex-direction: column;
-  gap: 2.5vh;
-  padding-bottom: 2rem;
+  gap: 0.5rem;
+  /* flex: 1; */
+}
+
+.tasks {
+  padding-bottom: 1rem;
   border-bottom: 1px solid #232f4b21;
 }
 
@@ -254,95 +258,94 @@ ul[role="list"] {
   font-size: 0.95rem;
 }
 
-/***************************************************
- * Vertical Segmented Control with Inset Shadow Bar
- ***************************************************/
-
-/* Container for vertical tabs */
-.segmented-control.vertical {
-  /* flex: 1; */
-  /* No outer border or box-shadow for minimal design */
-  display: flex;
-  flex-direction: column;               /* Block-level container */
-  position: relative;           /* Position for absolutely placed inset bar */
-  align-items: center;
-  gap: 1.5vh;
-  /* padding: 1vh 0; */
+.inset-bg {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2rem;
+  /* height: calc(100% / 10); Adjust if needed */
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+              inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  border-radius: 0.5rem;
+  background: #e4ebf5;
+  opacity: 1; /* Hidden by default */
+  transition: all 0.4s ease, opacity 0.4s ease;
+  z-index: 1;
 }
 
-/* Hide radio inputs globally */
+
+/***************************************************
+ * TASKS AND CATEGORIES SEGMENTED CONTROLS
+ ***************************************************/
+
+/* General segmented control styling */
+.segmented-control.vertical {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  gap: 1.5vh;
+}
+
 .segmented-control.vertical input[type="radio"] {
   display: none;
 }
 
-/* Each tab label */
-.segmented-control__tab {
+.segmented-control__tab,
+.categories__tab {
   width: 100%;
   padding: 1vh 0.5vw 1vh 1.5vw;
   display: flex;
   align-items: center;
-  gap: 1.5vw;           
-  /* height: calc(100% / 3);  3 tabs share container height equally */
-  height: calc((100% - 3vh) / 3);
-  background: none;        /* Transparent, since the inset bar is behind them */
+  gap: 1.5vw;
+  height: calc((100% - 3vh) / 3); /* Adjust for tasks (3 items) */
+  background: none;
   font-weight: 600;
   font-size: 1.2rem;
-  color: var(--text-main);          /* Main text color */
+  color: var(--text-main);
   cursor: pointer;
   transition: color 0.3s ease;
-  position: relative;      /* So text is above the .segmented-control__inset-bg */
-  z-index: 2;              /* Ensures text is on top of the inset background */
+  position: relative;
+  z-index: 2;
 }
 
-/* Hover effect */
-.segmented-control__tab:hover {
-  color: var(--text-accent); /* Example "var(--primary)" color */
+/* Hover effect for tabs */
+.segmented-control__tab:hover,
+.categories__tab:hover {
+  color: var(--text-accent);
 }
 
-/* The moving 'inset shadow' bar behind labels */
-.segmented-control__inset-bg {
-  position: absolute;
-  /* border: 2px solid black; */
-  top: 0; 
-  left: 0;
-  width: 100%;
-  /* height: calc(100% / 3); */
-  height: calc((100% - 3vh) / 3);
-  /* Neumorphic inset shadow */
-  box-shadow:
-    inset 4px 4px 8px rgba(163, 177, 198, 0.6),
-    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
-  border-radius: 0.5rem;
-  background: #e4ebf5;    /* Example pastel background behind the text */
-  transition: transform 0.4s ease;
-  z-index: 1;             /* Stays behind the labels */
-}
-
-/* Animate the inset bar up/down for each radio input */
-#upcoming:checked ~ .segmented-control__inset-bg {
-  transform: translateY(0%);
-}
-
-#today:checked ~ .segmented-control__inset-bg {
-  transform: translateY(calc(100% + 1.5vh));
-}
-
-#all-tasks:checked ~ .segmented-control__inset-bg {
-  transform: translateY(calc(200% + 3vh));
-}
-
-/* Active tab text color (optional) */
+/* Active tab styles */
 #upcoming:checked + .segmented-control__tab,
 #today:checked + .segmented-control__tab,
-#all-tasks:checked + .segmented-control__tab {
-  color: var(--text-accent); /* Example accent color when selected */
+#all-tasks:checked + .segmented-control__tab,
+#default-category:checked + .categories__tab,
+#work-category:checked + .categories__tab {
   font-weight: 800;
+  color: var(--text-accent);
+}
+
+/* Tab-specific styles for icons */
+.segmented-control__tab i,
+.categories__tab i {
+  transition: color 0.3s ease;
 }
 
 #upcoming:checked + .segmented-control__tab i,
 #today:checked + .segmented-control__tab i,
-#all-tasks:checked + .segmented-control__tab i {
-  color: var(--text-accent); /* Change icon color when active */
+#all-tasks:checked + .segmented-control__tab i,
+#default-category:checked + .categories__tab i,
+#work-category:checked + .categories__tab i {
+  color: var(--text-accent);
+}
+
+/* Adjust height dynamically for categories */
+.categories__tab {
+  height: calc((100% - 1.5vh) / 2); /* Adjust for dynamic categories */
+}
+
+.categories {
+  flex: 1;
 }
 
 /* Add Category Button */
