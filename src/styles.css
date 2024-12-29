@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Quicksand:wght@300..700&family=Roboto+Slab:wght@100..900&display=swap');/* CSS RESET */
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Quicksand:wght@300..700&family=Roboto+Slab:wght@100..900&display=swap"); /* CSS RESET */
 /*
     1. Use a more-intuitive box-sizing model.
 */
@@ -25,14 +25,14 @@ body {
   -webkit-font-smoothing: antialiased;
   min-height: 100%;
   min-width: 100%;
-  --font-main: 'Quicksand', sans-serif; /* For headings */
-  --font-secondary: 'Nunito', sans-serif; /* For body text */
-  --font-heading: 'Inter', sans-serif;
+  --font-main: "Quicksand", sans-serif; /* For headings */
+  --font-secondary: "Nunito", sans-serif; /* For body text */
+  --font-heading: "Inter", sans-serif;
   --bg-main: #e0e5ec; /* Main light gray background */
   --bg-secondary: #dce2eb; /* Slightly darker gray for panels or sections */
   /* --text-heading: #142347; */
-  --text-main: #232f4b;    /* Dark gray for primary text */
-  --text-accent: #24569b;  /* Muted blue-gray for accents */
+  --text-main: #232f4b; /* Dark gray for primary text */
+  --text-accent: #24569b; /* Muted blue-gray for accents */
   /* --text-para: #213564; */
   background-color: var(--bg-main);
   font-family: var(--font-secondary);
@@ -131,9 +131,9 @@ ul[role="list"] {
   border-radius: 1rem;
   padding: 1.5rem;
   background-color: var(--bg-secondary);
-  box-shadow: 
-    9px 9px 20px rgba(190, 205, 226, 0.65), /* Darker shadow for bottom-right */
-    -12px -12px 20px rgba(248, 248, 248, 0.8); /* Lighter shadow for top-left */
+  box-shadow: 9px 9px 20px rgba(190, 205, 226, 0.65),
+    /* Darker shadow for bottom-right */ -12px -12px 20px
+      rgba(248, 248, 248, 0.8); /* Lighter shadow for top-left */
   border: 1px solid rgba(255, 255, 255, 0.13); /* Slightly more prominent border for definition */
   display: flex;
   flex-direction: column;
@@ -151,13 +151,21 @@ ul[role="list"] {
 }
 
 .nav::-webkit-scrollbar-thumb {
-  background: linear-gradient(45deg, var(--text-main), var(--text-accent)); /* Gradient thumb */
+  background: linear-gradient(
+    45deg,
+    var(--text-main),
+    var(--text-accent)
+  ); /* Gradient thumb */
   border-radius: 20px; /* Rounded edges for the thumb */
   border: 2px solid var(--bg-secondary); /* Creates space around the thumb */
 }
 
 .nav::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(45deg, var(--text-accent), var(--text-main)); /* Hover effect */
+  background: linear-gradient(
+    45deg,
+    var(--text-accent),
+    var(--text-main)
+  ); /* Hover effect */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Glow effect on hover */
 }
 
@@ -175,13 +183,13 @@ ul[role="list"] {
 .nav::-webkit-scrollbar-button {
   background: var(--text-main); /* Arrow buttons */
   border-radius: 50%; /* Rounded buttons */
-  display: none; 
+  display: none;
 }
 
 .nav:hover {
-  box-shadow: 
-    11px 11px 24px rgba(190, 205, 226, 0.9), /* Slightly stronger bottom-right shadow */
-    -14px -14px 22px rgb(255, 255, 255); /* Slightly stronger top-left shadow */
+  box-shadow: 11px 11px 24px rgba(190, 205, 226, 0.9),
+    /* Slightly stronger bottom-right shadow */ -14px -14px 22px
+      rgb(255, 255, 255); /* Slightly stronger top-left shadow */
 }
 
 .nav.collapsed {
@@ -203,7 +211,8 @@ ul[role="list"] {
   color: var(--text-main);
 }
 
-.collapse-btn, .add-category-btn {
+.collapse-btn,
+.add-category-btn {
   outline: transparent;
   border: none;
   background-color: var(--bg-main);
@@ -212,9 +221,8 @@ ul[role="list"] {
   height: 2.5rem;
 
   /* Neumorphic Raised Shadow */
-  box-shadow: 
-    9px 9px 17px rgba(167, 180, 199, 0.5), /* Darker shadow for bottom-right */
-    -8px -8px 17px rgba(248, 248, 248, 0.7); /* Lighter shadow for top-left */
+  box-shadow: 9px 9px 17px rgba(167, 180, 199, 0.5),
+    /* Darker shadow for bottom-right */ -8px -8px 17px rgba(248, 248, 248, 0.7); /* Lighter shadow for top-left */
   transition: all 200ms ease-in-out;
   border: 1px solid rgba(214, 214, 214, 0.432);
   cursor: pointer;
@@ -225,9 +233,9 @@ ul[role="list"] {
 }
 
 /* Hover Effect */
-.collapse-btn:hover, .add-category-btn:hover {
-  box-shadow: 
-    12px 12px 22px rgba(174, 189, 211, 0.9),
+.collapse-btn:hover,
+.add-category-btn:hover {
+  box-shadow: 12px 12px 22px rgba(174, 189, 211, 0.9),
     -12px -12px 22px rgba(255, 255, 255, 1);
   color: var(--text-accent);
   font-weight: 700;
@@ -237,15 +245,17 @@ ul[role="list"] {
   scale: 1.08;
 }
 
-.collapse-btn:hover i, .add-category-btn:hover i{
+.collapse-btn:hover i,
+.add-category-btn:hover i {
   color: var(--text-accent);
 }
 
 /* Click Animation (Pressed-In Effect) */
-.collapse-btn:active, .add-category-btn:active {
-  box-shadow: 
-    inset 5px 5px 10px rgba(190, 205, 226, 0.7), /* Inset shadow for pressed effect */
-    inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+.collapse-btn:active,
+.add-category-btn:active {
+  box-shadow: inset 5px 5px 10px rgba(190, 205, 226, 0.7),
+    /* Inset shadow for pressed effect */ inset -5px -5px 10px
+      rgba(255, 255, 255, 0.8);
   transform: scale(0.95); /* Slightly shrink the button */
   color: var(--text-accent);
 }
@@ -263,7 +273,8 @@ ul[role="list"] {
   text-decoration: underline;
 }
 
-.tasks, .categories {
+.tasks,
+.categories {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -294,7 +305,6 @@ ul[role="list"] {
   position: relative;
   align-items: center;
   gap: 0.5rem;
-  
 }
 
 .segmented-control.vertical input[type="radio"] {
@@ -331,8 +341,7 @@ ul[role="list"] {
 #upcoming:checked + .segmented-control__tab,
 #today:checked + .segmented-control__tab,
 #all-tasks:checked + .segmented-control__tab,
-#default-category:checked + .categories__tab,
-#work-category:checked + .categories__tab {
+.user-category:checked + .categories__tab {
   font-weight: 800;
   color: var(--text-accent);
 }
@@ -346,8 +355,7 @@ ul[role="list"] {
 #upcoming:checked + .segmented-control__tab i,
 #today:checked + .segmented-control__tab i,
 #all-tasks:checked + .segmented-control__tab i,
-#default-category:checked + .categories__tab i,
-#work-category:checked + .categories__tab i {
+.user-category:checked + .categories__tab i {
   color: var(--text-accent);
 }
 
@@ -359,12 +367,12 @@ ul[role="list"] {
 .inset-bg {
   position: absolute;
   left: 1.5rem;
-  top: 7.5rem;
+  top: 20.5rem;
   width: calc(100% - 3rem);
   height: 2.5rem;
   /* height: calc(100% / 10); Adjust if needed */
   box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
-              inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
   border-radius: 0.5rem;
   background: #e4ebf5;
   opacity: 1; /* Hidden by default */
@@ -378,4 +386,82 @@ ul[role="list"] {
   width: fit-content;
   padding: 1rem;
   gap: 0.5rem;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: relative;
+  background: white;
+  border-radius: 10px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  z-index: 1001;
+}
+
+.modal-content label {
+  font-weight: bold;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-buttons button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.modal-buttons button:hover {
+  background-color: #eee;
+}
+
+.add-todo-btn {
+  margin: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+}
+
+.add-todo-btn:hover {
+  background-color: #0056b3;
 }

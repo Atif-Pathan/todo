@@ -25,7 +25,7 @@
                     <h1 class="task-title">TASKS</h1>
                     <div class="segmented-control vertical">
                         <!-- The radio inputs are hidden but control which tab is active -->
-                        <input type="radio" id="upcoming" name="vertical-tabs" hidden checked />
+                        <input type="radio" id="upcoming" name="vertical-tabs" hidden />
                         <label for="upcoming" class="segmented-control__tab">
                           <i class="fa-solid fa-angles-right fa-sm"></i>
                           Upcoming
@@ -47,29 +47,16 @@
                 <div class="categories">
                     <h1 class="task-title">CATEGORIES</h1>
                     <div class="segmented-control vertical">
-                      <input type="radio" class="user-category" id="default-category" name="vertical-categories" hidden />
+                      <input type="radio" class="user-category" id="default-category" name="vertical-categories" hidden checked />
                       <label for="default-category" class="categories__tab">
                         <i class="fa-solid fa-folder fa-sm"></i>
                         General
-                      </label>
-
-                      <input type="radio" class="user-category" id="school-category" name="vertical-categories" hidden />
-                      <label for="school-category" class="categories__tab">
-                        <i class="fa-solid fa-book fa-sm"></i>
-                        School
-                      </label>
-                  
-                      <input type="radio" class="user-category" id="work-category" name="vertical-categories" hidden />
-                      <label for="work-category" class="categories__tab">
-                        <i class="fa-solid fa-briefcase fa-sm"></i>
-                        Work
                       </label>
                     </div>
                     <button class="add-category-btn"><i class="fa-solid fa-plus"></i> Add New Category</button>
                 </div>                                  
             </div>
-            <div class="content">
-                <p id="dynamic-content">Upcoming tasks will appear here...</p>
+            <div class="content-view">
             </div>
         </div>
     </div>
