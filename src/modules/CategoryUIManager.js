@@ -1,6 +1,6 @@
 class CategoryUIManager {
-  constructor(categoriesContainerSelector) {
-    this.categoriesContainer = document.querySelector(categoriesContainerSelector);
+  constructor() {
+    this.categoriesContainer = document.querySelector('.categories .segmented-control');
 
     if (!this.categoriesContainer) {
       throw new Error('Categories container not found!');
@@ -20,7 +20,7 @@ class CategoryUIManager {
     const input = document.createElement('input');
     input.type = 'radio';
     input.classList.add('user-category');
-    input.id = `category-${categoryName.toLowerCase()}`;
+    input.id = `category-${categoryName}`;
     input.name = 'vertical-categories';
     input.hidden = true;
 

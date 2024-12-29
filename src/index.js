@@ -1,21 +1,16 @@
 import './styles.css';
-import { openModal } from '../src/components/modal';
+import TabManager from './modules/TabManager.js';
+import TaskManager from './modules/TaskManager.js';
 
-// Add a button to trigger the modal
-const contentDiv = document.querySelector('.content-view');
-const addTodoButton = document.createElement('button');
-addTodoButton.textContent = 'Add Todo';
-addTodoButton.classList.add('add-todo-btn');
-addTodoButton.addEventListener('click', openModal);
+// Initialize TabManager for managing tab switching
+const tabManager = new TabManager('.content-view');
+const taskManager = TaskManager;
 
-// Append the button to the content div
-contentDiv.appendChild(addTodoButton);
-
+// Collapse/Expand Navigation Logic
 const collapseBtn = document.querySelector('.collapse-btn');
 const nav = document.querySelector('.nav');
 const caretIcon = collapseBtn.querySelector('.fa-caret-up');
 
-// Collapse and expand the nav menu
 collapseBtn.addEventListener('click', () => {
   nav.classList.toggle('collapsed');
   if (nav.classList.contains('collapsed')) {
@@ -67,5 +62,8 @@ nav.addEventListener('change', (event) => {
 
     // Update the inset background position
     insetBg.style.top = `${newPosition}rem`;
+
+    // Render the appropriate tab content
+    tabManager.renderTabContent(radio.id);
   }
 });

@@ -1,11 +1,9 @@
 import TaskManager from "../modules/TaskManager.js";
 import CategoryUIManager from "../modules/CategoryUIManager.js";
 
-// Initialize CategoryUIManager
-const categoryUIManager = new CategoryUIManager('.categories .segmented-control');
+const categoryUIManager = new CategoryUIManager();
 
-// Function to open the modal
-export function openModal() {
+export function openModal(currentTabId = null) {
   if (document.querySelector('.modal')) return; // Avoid multiple modals
 
   const modal = document.createElement('div');
@@ -41,7 +39,7 @@ export function openModal() {
   priorityLabel.textContent = 'Priority:';
   const prioritySelect = document.createElement('select');
   const priorities = ['Low', 'Medium', 'High'];
-  priorities.forEach(priority => {
+  priorities.forEach((priority) => {
     const option = document.createElement('option');
     option.value = priority.toLowerCase();
     option.textContent = priority;
@@ -54,33 +52,10 @@ export function openModal() {
   const categorySelect = document.createElement('select');
   categorySelect.id = 'category-select';
 
-  // Populate dropdown with categories
-  const populateCategories = () => {
-    categorySelect.innerHTML = '';
-    const categories = TaskManager.getAllCategories();
-    if (categories.length === 0) {
-      const noCategoryOption = document.createElement('option');
-      noCategoryOption.value = '';
-      noCategoryOption.textContent = 'No categories available';
-      noCategoryOption.disabled = true;
-      noCategoryOption.selected = true;
-      categorySelect.appendChild(noCategoryOption);
-    } else {
-      categories.forEach(category => {
-        const option = document.createElement('option');
-        option.value = category.name;
-        option.textContent = category.name;
-        categorySelect.appendChild(option);
-      });
-    }
-  };
-  populateCategories();
-
-  // Add New Category Button
-  const addCategoryButton = document.createElement('button');
-  addCategoryButton.textContent = 'Add New Category';
-  addCategoryButton.classList.add('add-category-btn');
-  addCategoryButton.type = 'button';
+  const newCategoryOption = document.createElement('option');
+  newCategoryOption.value = 'create-new';
+  newCategoryOption.textContent = 'Create New Category';
+  categorySelect.appendChild(newCategoryOption);
 
   // Input for new category
   const newCategoryInput = document.createElement('input');
@@ -89,43 +64,62 @@ export function openModal() {
   newCategoryInput.classList.add('new-category-input');
   newCategoryInput.style.display = 'none';
 
-  // Save new category
-  const saveCategoryButton = document.createElement('button');
-  saveCategoryButton.textContent = 'Save';
-  saveCategoryButton.classList.add('save-category-btn');
-  saveCategoryButton.type = 'button';
-  saveCategoryButton.style.display = 'none';
+  const populateCategories = () => {
+    categorySelect.innerHTML = ''; // Clear existing options
 
-  addCategoryButton.addEventListener('click', () => {
-    newCategoryInput.style.display = 'block';
-    saveCategoryButton.style.display = 'block';
-  });
+    const categories = TaskManager.getAllCategories();
+    const defaultCategory = TaskManager.getCategoryByName('General');
+    let preselectedCategory = defaultCategory ? defaultCategory.name : null;
 
-  saveCategoryButton.addEventListener('click', () => {
-    const newCategory = newCategoryInput.value.trim();
-    if (newCategory) {
-      try {
-        // Add the category to TaskManager
-        TaskManager.createCategory(newCategory);
-
-        // Update the dropdown
-        populateCategories();
-
-        // Update the UI with the new category
-        categoryUIManager.addCategory(newCategory);
-
-        // Automatically select the new category
-        categorySelect.value = newCategory;
-
-        // Reset the input fields
-        newCategoryInput.value = '';
-        newCategoryInput.style.display = 'none';
-        saveCategoryButton.style.display = 'none';
-      } catch (error) {
-        alert(error.message);
-      }
+    if (categories.length === 0) {
+      // No categories available, show only "Create New" option
+      const noCategoryOption = document.createElement('option');
+      noCategoryOption.value = 'create-new';
+      noCategoryOption.textContent = 'Create New Category';
+      noCategoryOption.selected = true;
+      categorySelect.appendChild(noCategoryOption);
+      newCategoryInput.style.display = 'block';
     } else {
-      alert('Category name cannot be empty.');
+      // Populate categories
+      categories.forEach((category) => {
+        const option = document.createElement('option');
+        option.value = category.name;
+        option.textContent = category.name;
+        
+        if (currentTabId && currentTabId.includes('category-')) {
+          if (currentTabId.replace('category-', '') === category.name) {
+            option.selected = true; // Preselect the current category tab
+            preselectedCategory = category.name;
+          }
+        } else if (!currentTabId && category.name === 'General') {
+          option.selected = true; // Preselect General for task tabs
+          preselectedCategory = 'General';
+        }
+        categorySelect.appendChild(option);
+      });
+
+      // Add "Create New Category" option
+      const createNewOption = document.createElement('option');
+      createNewOption.value = 'create-new';
+      createNewOption.textContent = 'Create New Category';
+      categorySelect.appendChild(createNewOption);
+
+      // Preselect General if no category matches
+      if (!preselectedCategory) {
+        categorySelect.value = defaultCategory
+          ? defaultCategory.name
+          : categories[categories.length - 1].name; // Last updated category
+      }
+    }
+  };
+
+  populateCategories();
+
+  categorySelect.addEventListener('change', () => {
+    if (categorySelect.value === 'create-new') {
+      newCategoryInput.style.display = 'block';
+    } else {
+      newCategoryInput.style.display = 'none';
     }
   });
 
@@ -139,32 +133,55 @@ export function openModal() {
     const todoDetails = {
       title: titleInput.value.trim(),
       description: descriptionInput.value.trim(),
-      dueDate: dueDateInput.value ? new Date(dueDateInput.value) : null,
+      dueDate: dueDateInput.value ? parseDueDate(dueDateInput.value) : null,
       priority: prioritySelect.value,
     };
 
-    // Validate title
     if (!todoDetails.title) {
       alert('Title is required.');
       return;
     }
 
-    const categoryName = categorySelect.value || TaskManager.defaultCategoryName;
+    let selectedCategory = categorySelect.value;
+    if (selectedCategory === 'create-new') {
+      let newCategoryName = newCategoryInput.value.trim();
+      newCategoryName = newCategoryName.charAt(0).toUpperCase() + newCategoryName.slice(1);
+      if (!newCategoryName) {
+        alert('Category name is required.');
+        return;
+      }
+
+      try {
+        TaskManager.createCategory(newCategoryName);
+        categoryUIManager.addCategory(newCategoryName); // Update the UI
+        selectedCategory = newCategoryName; // Use the new category
+      } catch (error) {
+        alert(error.message);
+        return;
+      }
+    }
 
     try {
-      TaskManager.addTodoToCategory(todoDetails, categoryName);
-      console.log(`Todo created in category "${categoryName}":`, todoDetails);
+      TaskManager.addTodoToCategory(todoDetails, selectedCategory);
+      // console.log(`Todo created in category "${selectedCategory}":`, todoDetails);
       closeModal();
+      // reloadTabContent(); 
     } catch (error) {
       alert(error.message);
     }
   });
 
+  function parseDueDate(inputValue) {
+    // Split the input value (YYYY-MM-DD) into components
+    const [year, month, day] = inputValue.split('-').map(Number);
+    // Create a new Date object using the components (month is 0-indexed)
+    return new Date(year, month - 1, day);
+  }
+
   const cancelButton = document.createElement('button');
   cancelButton.textContent = 'Cancel';
   cancelButton.addEventListener('click', closeModal);
 
-  // Append everything to modal content
   buttonContainer.appendChild(createButton);
   buttonContainer.appendChild(cancelButton);
 
@@ -178,9 +195,7 @@ export function openModal() {
   modalContent.appendChild(prioritySelect);
   modalContent.appendChild(categoryLabel);
   modalContent.appendChild(categorySelect);
-  modalContent.appendChild(addCategoryButton);
   modalContent.appendChild(newCategoryInput);
-  modalContent.appendChild(saveCategoryButton);
   modalContent.appendChild(buttonContainer);
 
   modal.appendChild(overlay);
@@ -192,4 +207,8 @@ export function openModal() {
 function closeModal() {
   const modal = document.querySelector('.modal');
   if (modal) modal.remove();
+
+  // Dispatch a custom event to signal that the data has been updated
+  const event = new CustomEvent('contentUpdated');
+  document.dispatchEvent(event);
 }

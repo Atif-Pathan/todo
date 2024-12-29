@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { formatISO, isBefore } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 
 class TodoItem {
   constructor({
@@ -15,10 +15,13 @@ class TodoItem {
     this.id = uuidv4();
     this.title = title;
     this.description = description;
-    this.dueDate = dueDate ? new Date(dueDate) : null;
+
+    // Normalize the dueDate to local midnight using startOfDay
+    this.dueDate = dueDate ? startOfDay(dueDate) : null;
+
     this.priority = priority;
     this.status = status;
-    this.createdDate = new Date();
+    this.createdDate = startOfDay(new Date());
     this.updatedDate = this.createdDate;
   }
 
@@ -36,7 +39,7 @@ class TodoItem {
   }
 
   getDueDate() {
-    return this.dueDate ? formatISO(this.dueDate) : null;
+    return this.dueDate ? format(this.dueDate, "yyyy-MM-dd") : null;
   }
 
   getPriority() {
@@ -48,11 +51,11 @@ class TodoItem {
   }
 
   getCreatedDate() {
-    return formatISO(this.createdDate);
+    return format(this.createdDate, "yyyy-MM-dd");
   }
 
   getUpdatedDate() {
-    return formatISO(this.updatedDate);
+    return format(this.updatedDate, "yyyy-MM-dd");
   }
 
   // Setters
@@ -70,20 +73,17 @@ class TodoItem {
   }
 
   setDueDate(newDueDate) {
-    const date = new Date(newDueDate);
-    if (isNaN(date)) {
+    if (!newDueDate) {
       throw new Error("Invalid date.");
     }
-    this.dueDate = date;
+    this.dueDate = startOfDay(new Date(newDueDate));
     this._updateTimestamp();
   }
 
   setPriority(newPriority) {
     const validPriorities = ["low", "medium", "high"];
     if (!validPriorities.includes(newPriority)) {
-      throw new Error(
-        "Priority must be 'low', 'medium', or 'high'."
-      );
+      throw new Error("Priority must be 'low', 'medium', or 'high'.");
     }
     this.priority = newPriority;
     this._updateTimestamp();
@@ -92,9 +92,7 @@ class TodoItem {
   setStatus(newStatus) {
     const validStatuses = ["incomplete", "complete", "overdue"];
     if (!validStatuses.includes(newStatus)) {
-      throw new Error(
-        "Status must be 'incomplete', 'complete', or 'overdue'."
-      );
+      throw new Error("Status must be 'incomplete', 'complete', or 'overdue'.");
     }
     this.status = newStatus;
     this._updateTimestamp();
@@ -112,20 +110,19 @@ class TodoItem {
   }
 
   checkOverdue(currentDate = new Date()) {
-    if (this.dueDate && isBefore(this.dueDate, currentDate)) {
+    if (this.dueDate && isBefore(this.dueDate, startOfDay(currentDate))) {
       this.status = "overdue";
       this._updateTimestamp();
     }
   }
 
-  // to check overdue status without modifying todoItem
   isOverdue(currentDate = new Date()) {
-    return this.dueDate && isBefore(this.dueDate, currentDate);
+    return this.dueDate && isBefore(this.dueDate, startOfDay(currentDate));
   }
 
   // Private method to update the timestamp after each setter is called
   _updateTimestamp() {
-    this.updatedDate = new Date();
+    this.updatedDate = startOfDay(new Date());    
   }
 }
 

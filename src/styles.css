@@ -145,12 +145,14 @@ ul[role="list"] {
 }
 
 /* Webkit-based browsers */
-.nav::-webkit-scrollbar {
+.nav::-webkit-scrollbar,
+.content-view::-webkit-scrollbar {
   width: 10px; /* Width of the scrollbar */
   height: 10px; /* Height of the horizontal scrollbar */
 }
 
-.nav::-webkit-scrollbar-thumb {
+.nav::-webkit-scrollbar-thumb,
+.content-view::-webkit-scrollbar-thumb {
   background: linear-gradient(
     45deg,
     var(--text-main),
@@ -160,7 +162,8 @@ ul[role="list"] {
   border: 2px solid var(--bg-secondary); /* Creates space around the thumb */
 }
 
-.nav::-webkit-scrollbar-thumb:hover {
+.nav::-webkit-scrollbar-thumb:hover,
+.content-view::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(
     45deg,
     var(--text-accent),
@@ -169,18 +172,21 @@ ul[role="list"] {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Glow effect on hover */
 }
 
-.nav::-webkit-scrollbar-track {
+.nav::-webkit-scrollbar-track,
+.content-view::-webkit-scrollbar-track {
   background: var(--bg-secondary); /* Light background for the track */
   border-radius: 20px;
   margin-top: 6rem; /* Adds space at the top */
   margin-bottom: 1.5rem;
 }
 
-.nav::-webkit-scrollbar-corner {
+.nav::-webkit-scrollbar-corner,
+.content-view::-webkit-scrollbar-corner {
   background: var(--bg-secondary); /* Matches background color */
 }
 
-.nav::-webkit-scrollbar-button {
+.nav::-webkit-scrollbar-button,
+.content-view::-webkit-scrollbar-button {
   background: var(--text-main); /* Arrow buttons */
   border-radius: 50%; /* Rounded buttons */
   display: none;
@@ -367,7 +373,7 @@ ul[role="list"] {
 .inset-bg {
   position: absolute;
   left: 1.5rem;
-  top: 20.5rem;
+  top: 13.5rem;
   width: calc(100% - 3rem);
   height: 2.5rem;
   /* height: calc(100% / 10); Adjust if needed */
@@ -464,4 +470,16 @@ ul[role="list"] {
 
 .add-todo-btn:hover {
   background-color: #0056b3;
+}
+
+.content-view {
+  overflow-y: auto;
+  /* background-color: #007bff; */
+  flex: 1;
+}
+
+.page-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
 }
