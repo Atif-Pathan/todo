@@ -1,4 +1,5 @@
 import TaskManager from './TaskManager.js';
+import TodoRenderer from './TodoRenderer.js';
 import { isSameDay, isAfter, startOfToday, parseISO } from 'date-fns';
 
 class TabManager {
@@ -25,41 +26,50 @@ class TabManager {
   renderTabContent(tabId) {
     this.currentTabId = tabId;
     this.contentView.innerHTML = ''; // Clear existing content
-
+  
+    // Create a header container
+    const header = document.createElement('div');
+    header.classList.add('content-header');
+  
     // Add a title for the current tab
     const title = document.createElement('h2');
     title.textContent = `${this.getTabTitle(tabId)}`;
     title.classList.add('page-title');
-    this.contentView.appendChild(title);
-
+    header.appendChild(title);
+  
     // Add a button to open the modal for creating a new todo
     const addTodoButton = document.createElement('button');
-    addTodoButton.textContent = 'Add Todo';
+    addTodoButton.innerHTML = `<i class="fa-solid fa-plus fa-sm"></i>Add Todo`;
     addTodoButton.classList.add('add-todo-btn');
     addTodoButton.addEventListener('click', () => {
       import('../components/modal.js').then(({ openModal }) => openModal(tabId));
     });
-    this.contentView.appendChild(addTodoButton);
-
-    // Render the list of todos based on the selected tab
-    const taskList = document.createElement('ul');
-    taskList.classList.add('task-list');
-
+    header.appendChild(addTodoButton);
+  
+    // Append the header to the content view
+    this.contentView.appendChild(header);
+  
+    // Create a container for the todos grid
+    const todosGrid = document.createElement('div');
+    todosGrid.classList.add('todos-grid');
+  
     // Fetch and filter todos based on the tab
     const todos = this.getTodosForTab(tabId);
     if (todos.length === 0) {
       const emptyMessage = document.createElement('p');
       emptyMessage.textContent = 'No todos to display.';
-      this.contentView.appendChild(emptyMessage);
+      emptyMessage.classList.add('empty-message');
+      todosGrid.appendChild(emptyMessage);
     } else {
       todos.forEach((todo) => {
-        const listItem = this.createTodoListItem(todo);
-        taskList.appendChild(listItem);
+        const todoItem = TodoRenderer.renderTodoItem(todo); // Render the sticky note for each todo
+        todosGrid.appendChild(todoItem);
       });
     }
-
-    this.contentView.appendChild(taskList);
-  }
+  
+    // Append the grid to the content view
+    this.contentView.appendChild(todosGrid);
+  }  
 
   /**
    * Get todos for the selected tab.
@@ -88,8 +98,10 @@ class TabManager {
         .getAllCategories()
         .flatMap((category) =>
           category.listTodos().filter((todo) =>
-            todo.getDueDate() ? (isAfter(parseISO(todo.getDueDate()), today) &&
-            todo.getStatus() === 'incomplete') : null
+            todo.getDueDate()
+              ? isAfter(parseISO(todo.getDueDate()), today) &&
+                todo.getStatus() === 'incomplete'
+              : null
           )
         );
     } else {
@@ -99,17 +111,6 @@ class TabManager {
       );
       return category ? category.listTodos() : [];
     }
-  }
-
-  /**
-   * Create a list item for a todo.
-   * @param {Object} todo - The todo item.
-   * @returns {HTMLElement} - List item element.
-   */
-  createTodoListItem(todo) {
-    const listItem = document.createElement('li');
-    listItem.textContent = `${todo.getTitle()} (Priority: ${todo.getPriority()})`;
-    return listItem;
   }
 
   /**
