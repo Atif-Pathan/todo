@@ -124,10 +124,10 @@ ul[role="list"] {
 }
 
 .nav {
-  min-width: fit-content;
+  min-width: 22vw;
   max-width: 22vw;
   height: 100%;
-  width: 21vw;
+  width: 22vw;
   border-radius: 1rem;
   padding: 1.5rem;
   background-color: var(--bg-secondary);
@@ -142,6 +142,12 @@ ul[role="list"] {
   transition: all 250ms ease-in-out;
   position: relative;
   overflow-y: auto;
+}
+
+@media (max-width: 800px) {
+  .nav {
+    min-width: fit-content;
+  }
 }
 
 /* Webkit-based browsers */
@@ -199,14 +205,25 @@ ul[role="list"] {
 }
 
 .nav.collapsed {
+  padding: 1.5rem 1rem;
   width: 5vw; /* Shrinks the nav bar */
+  min-width: 0;
 }
 
-.nav.collapsed .segmented-control input,
-.nav.collapsed .segmented-control label,
-.nav.collapsed .categories button,
-.nav.collapsed h1 {
+.nav.collapsed .collapse-btn {
+  left: 1rem;
+}
+
+.nav.collapsed .inset-bg,
+.nav.collapsed .categories,
+.nav.collapsed .nav-row,
+.nav.collapsed .tasks {
   display: none; /* Hides elements once animation completes */
+}
+
+.nav.collapsed .nav-row {
+  justify-content: center;
+  gap: 0;
 }
 
 .nav-row {
@@ -217,15 +234,20 @@ ul[role="list"] {
   color: var(--text-main);
 }
 
+.collapse-btn {
+  position: absolute;
+  right: 1.5rem;
+  top: 1.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
 .collapse-btn,
 .add-category-btn {
   outline: transparent;
   border: none;
   background-color: var(--bg-main);
   border-radius: 1rem; /* Make it circular */
-  width: 2.5rem;
-  height: 2.5rem;
-
   /* Neumorphic Raised Shadow */
   box-shadow: 9px 9px 17px rgba(167, 180, 199, 0.5),
     /* Darker shadow for bottom-right */ -8px -8px 17px rgba(248, 248, 248, 0.7); /* Lighter shadow for top-left */
@@ -368,12 +390,14 @@ ul[role="list"] {
 .categories {
   flex: 1;
   position: relative;
+  gap: 0.5rem;
+  /* padding-top: 0.5rem; */
 }
 
 .inset-bg {
   position: absolute;
   left: 1.5rem;
-  top: 13.5rem;
+  top: 13rem;
   width: calc(100% - 3rem);
   height: 2.5rem;
   /* height: calc(100% / 10); Adjust if needed */
@@ -388,10 +412,11 @@ ul[role="list"] {
 
 /* Add Category Button */
 .add-category-btn {
-  margin-top: 1.5rem;
-  width: fit-content;
-  padding: 1rem;
-  gap: 0.5rem;
+  position: absolute;
+  right: 0;
+  top: -0.25rem;
+  padding: 0.7rem 0.8rem;
+  /* border: 1px solid black; */
 }
 
 .modal {
@@ -482,4 +507,51 @@ ul[role="list"] {
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
+}
+
+.add-category-input {
+  display: none;
+  transition: max-height 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  max-height: 0;
+  width: 100%;
+  opacity: 0;
+  /* height: 2.5rem; */
+  box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
+    inset -4px -4px 8px rgba(255, 255, 255, 0.5);
+  background: #e4ebf5;
+}
+
+.add-category-input.open {
+  display: flex; /* Allow it to be rendered */
+  height: 2.5rem;
+  max-height: 2.5rem; /* Adjust to your content's full height */
+  opacity: 1; /* Fully visible */
+}
+
+#add-new-category {
+  outline: transparent;
+  border: none;
+  padding: 0 0 0 1rem;
+  background-color: transparent;
+  /* border: 1px solid black; */
+  height: 100%;
+  width: 83%;
+  color: #232f4b;
+  font-weight: 700;
+}
+
+.add-cat {
+  outline: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.7rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  /* border: 1px solid black; */
+  height: 100%;
+  width: 17%;
 }

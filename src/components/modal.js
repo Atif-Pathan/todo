@@ -1,7 +1,5 @@
 import TaskManager from "../modules/TaskManager.js";
-import CategoryUIManager from "../modules/CategoryUIManager.js";
-
-const categoryUIManager = new CategoryUIManager();
+import categoryUIManager from "../modules/CategoryUIManager.js";
 
 export function openModal(currentTabId = null) {
   if (document.querySelector('.modal')) return; // Avoid multiple modals

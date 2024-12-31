@@ -1,10 +1,16 @@
 class CategoryUIManager {
   constructor() {
+    if (CategoryUIManager.instance) {
+      return CategoryUIManager.instance; // Enforce singleton
+    }
+
     this.categoriesContainer = document.querySelector('.categories .segmented-control');
 
     if (!this.categoriesContainer) {
       throw new Error('Categories container not found!');
     }
+
+    CategoryUIManager.instance = this; // Cache the instance
   }
 
   /**
@@ -60,4 +66,5 @@ class CategoryUIManager {
   }
 }
 
-export default CategoryUIManager;
+const categoryUIManager = new CategoryUIManager();
+export default categoryUIManager;

@@ -12,14 +12,14 @@
     <div class="content">
         <div class="main">
             <div class="nav">
+                <button type="button" class="collapse-btn" title="Collapse">
+                    <i class="fa-solid fa-caret-up fa-xl fa-rotate-270"></i>
+                </button>
                 <div class="inset-bg"></div>
                 <div class="nav-row">
                     <!-- <h1 id="nav-header">Ready <span>to-do</span> stuff?</h1> -->
                     <!-- <h1 id="nav-header"><span>Menu</span></h1> -->
                     <h1 id="nav-header">Menu</h1>
-                    <button type="button" class="collapse-btn" title="Collapse">
-                        <i class="fa-solid fa-caret-up fa-xl fa-rotate-270"></i>
-                    </button>
                 </div>
                 <div class="tasks">
                     <h1 class="task-title">TASKS</h1>
@@ -46,6 +46,10 @@
                 </div>                                                                    
                 <div class="categories">
                     <h1 class="task-title">CATEGORIES</h1>
+                    <div class="add-category-input">
+                        <input type="text" name="add-new-category" id="add-new-category">
+                        <button type="button" class="add-cat"><i class="fa-solid fa-check fa-sm"></i></button>
+                    </div>
                     <div class="segmented-control vertical">
                       <input type="radio" class="user-category" id="category-General" name="vertical-categories" hidden />
                       <label for="category-General" class="categories__tab">
@@ -53,7 +57,7 @@
                         General
                       </label>
                     </div>
-                    <button class="add-category-btn"><i class="fa-solid fa-plus"></i> Add New Category</button>
+                    <button class="add-category-btn"><i class="fa-solid fa-plus fa-sm"></i></button>
                 </div>                                  
             </div>
             <div class="content-view">

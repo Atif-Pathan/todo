@@ -79,7 +79,7 @@ class TabManager {
         .getAllCategories()
         .flatMap((category) =>
           category.listTodos().filter((todo) =>
-            isSameDay(parseISO(todo.getDueDate()), today)
+            todo.getDueDate() ? isSameDay(parseISO(todo.getDueDate()), today) : null
           )
         );
     } else if (tabId === 'upcoming') {
@@ -88,8 +88,8 @@ class TabManager {
         .getAllCategories()
         .flatMap((category) =>
           category.listTodos().filter((todo) =>
-            isAfter(parseISO(todo.getDueDate()), today) &&
-            todo.getStatus() === 'incomplete'
+            todo.getDueDate() ? (isAfter(parseISO(todo.getDueDate()), today) &&
+            todo.getStatus() === 'incomplete') : null
           )
         );
     } else {
