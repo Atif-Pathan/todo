@@ -1,6 +1,7 @@
 import TaskManager from './TaskManager.js';
+import StickyWall from './StickyWall.js'; // Updated to use StickyWall for rendering category-level sticky notes
 import TodoRenderer from './TodoRenderer.js';
-import { isSameDay, isAfter, startOfToday, parseISO } from 'date-fns';
+import { isSameDay, isAfter, startOfToday, parseISO, isBefore } from 'date-fns';
 
 class TabManager {
   constructor(contentViewSelector) {
@@ -10,7 +11,7 @@ class TabManager {
     }
 
     this.taskManager = TaskManager; // Reference to TaskManager for fetching todos
-    this.currentTabId = 'all-tasks'; // Default tab to render
+    this.currentTabId = 'today'; // Default tab to render
     this.renderTabContent(this.currentTabId); // Render the default tab on initialization
 
     // Listen for the custom event and re-render the current tab
@@ -26,50 +27,69 @@ class TabManager {
   renderTabContent(tabId) {
     this.currentTabId = tabId;
     this.contentView.innerHTML = ''; // Clear existing content
-  
+
     // Create a header container
     const header = document.createElement('div');
     header.classList.add('content-header');
-  
+
     // Add a title for the current tab
     const title = document.createElement('h2');
     title.textContent = `${this.getTabTitle(tabId)}`;
     title.classList.add('page-title');
     header.appendChild(title);
-  
+
     // Add a button to open the modal for creating a new todo
-    const addTodoButton = document.createElement('button');
-    addTodoButton.innerHTML = `<i class="fa-solid fa-plus fa-sm"></i>Add Todo`;
-    addTodoButton.classList.add('add-todo-btn');
+    const addTodoButton = document.querySelector('.add-todo-btn');
     addTodoButton.addEventListener('click', () => {
       import('../components/modal.js').then(({ openModal }) => openModal(tabId));
     });
-    header.appendChild(addTodoButton);
-  
+    // header.appendChild(addTodoButton);
+
     // Append the header to the content view
     this.contentView.appendChild(header);
-  
-    // Create a container for the todos grid
-    const todosGrid = document.createElement('div');
-    todosGrid.classList.add('todos-grid');
-  
-    // Fetch and filter todos based on the tab
-    const todos = this.getTodosForTab(tabId);
-    if (todos.length === 0) {
-      const emptyMessage = document.createElement('p');
-      emptyMessage.textContent = 'No todos to display.';
-      emptyMessage.classList.add('empty-message');
-      todosGrid.appendChild(emptyMessage);
+
+    if (tabId === 'all-tasks') {
+      const todosGrid = document.createElement('div');
+      todosGrid.classList.add('category-grid');
+      // Render category-level sticky notes
+      const categories = this.taskManager.getAllCategories();
+      if (categories.length === 0) {
+        const emptyMessage = document.createElement('p');
+        emptyMessage.textContent = 'No categories exist. Create a new category to add Todos to!';
+        emptyMessage.classList.add('empty-message-sticky');
+        todosGrid.appendChild(emptyMessage);
+      } else {
+        StickyWall.renderAllCategories(categories, todosGrid); // Use StickyWall to render categories
+      }
+      this.contentView.appendChild(todosGrid);
     } else {
-      todos.forEach((todo) => {
-        const todoItem = TodoRenderer.renderTodoItem(todo); // Render the sticky note for each todo
-        todosGrid.appendChild(todoItem);
-      });
+      const todosList = document.createElement('div');
+      todosList.classList.add('todo-item-list');
+      // Render individual todos for other tabs
+      const todos = this.getTodosForTab(tabId);
+      if (todos.length !== 0) {
+        todos.forEach((todo) => {
+          const todoItem = TodoRenderer.renderTodoItem(todo); // Render the todo item
+          todosList.appendChild(todoItem);
+        });
+      } else {
+        const emptyMessage = document.createElement('p');
+        if (tabId === 'overdue') {
+          emptyMessage.innerHTML = `No overdue tasks. Keep it up!`;
+        } else if (tabId === 'today') {
+          emptyMessage.innerHTML = `No tasks for today!`;
+        } else if (tabId === 'upcoming') {
+          emptyMessage.innerHTML = `No upcoming tasks, maybe you missed some in the <u>overdue section</u>!`;
+        } else {
+          emptyMessage.innerHTML = `No tasks in ${tabId.replace('category-', '')}.`;
+        }
+        emptyMessage.classList.add('empty-message-todo');
+        todosList.appendChild(emptyMessage);
+      }
+      this.contentView.appendChild(todosList);
     }
-  
-    // Append the grid to the content view
-    this.contentView.appendChild(todosGrid);
-  }  
+    
+  }
 
   /**
    * Get todos for the selected tab.
@@ -104,6 +124,19 @@ class TabManager {
               : null
           )
         );
+    } else if (tabId === 'overdue') {
+      this.taskManager.checkOverdueTodos();
+      // Filter overdue todos
+      return this.taskManager
+        .getAllCategories()
+        .flatMap((category) =>
+          category.listTodos().filter((todo) =>
+            todo.getDueDate()
+              ? isBefore(parseISO(todo.getDueDate()), today) &&
+                todo.getStatus() === 'overdue'
+              : null
+          )
+        );
     } else {
       // Treat as a category tab
       const category = this.taskManager.getCategoryByName(
@@ -119,9 +152,10 @@ class TabManager {
    * @returns {string} - Tab title.
    */
   getTabTitle(tabId) {
-    if (tabId === 'all-tasks') return 'All Tasks';
+    if (tabId === 'all-tasks') return 'The Sticky Wall';
     if (tabId === 'today') return "Today's Tasks";
     if (tabId === 'upcoming') return 'Upcoming Tasks';
+    if (tabId === 'overdue') return 'Overdue Tasks';
     const newCat = tabId.replace('category-', '');
     return newCat.charAt(0).toUpperCase() + newCat.slice(1); // For categories
   }

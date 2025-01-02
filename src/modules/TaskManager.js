@@ -22,7 +22,7 @@ class TaskManager {
         (cat) => cat.name === TaskManager.defaultCategoryName
       )
     ) {
-      this.categories.push(new Category(TaskManager.defaultCategoryName));
+      this.categories.push(new Category(TaskManager.defaultCategoryName));     
     }
   }
 
@@ -32,7 +32,7 @@ class TaskManager {
   }
 
   createCategory(name) {
-    if (this.categories.find((cat) => cat.name === name)) {
+    if (this.categories.find((cat) => cat.name.toLowerCase() === name.toLowerCase())) {
       throw new Error(`Category "${name}" already exists.`);
     }
     this.categories.push(new Category(name));
@@ -55,7 +55,7 @@ class TaskManager {
     if (!category) {
       throw new Error(`Category "${oldName}" not found.`);
     }
-    if (this.categories.find((cat) => cat.name === newName)) {
+    if (this.categories.find((cat) => cat.name.toLowerCase() === newName.toLowerCase())) {
       throw new Error(`Category "${newName}" already exists.`);
     }
     category.name = newName;

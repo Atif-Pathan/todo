@@ -50,7 +50,7 @@ class TodoRenderer {
   
       return todoItem;
     }
-  }
+}
   
-  export default TodoRenderer;
+export default TodoRenderer;
   

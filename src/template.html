@@ -11,6 +11,7 @@
 <body>
     <div class="content">
         <div class="main">
+            <button class="add-todo-btn" type="button"><i class="fa-solid fa-plus fa-sm"></i>Add Todo</button>
             <div class="nav">
                 <button type="button" class="collapse-btn" title="Collapse">
                     <i class="fa-solid fa-caret-up fa-xl fa-rotate-270"></i>
@@ -31,16 +32,22 @@
                           Upcoming
                         </label>
                     
-                        <input type="radio" id="today" name="vertical-tabs" hidden />
+                        <input type="radio" id="today" name="vertical-tabs" hidden checked/>
                         <label for="today" class="segmented-control__tab">
                           <i class="fa-solid fa-calendar-day fa-sm"></i>
                           Today
                         </label>
-                    
-                        <input type="radio" id="all-tasks" name="vertical-tabs" hidden checked/>
+
+                        <input type="radio" id="overdue" name="vertical-tabs" hidden/>
+                        <label for="overdue" class="segmented-control__tab">
+                          <i class="fa-solid fa-clock fa-sm"></i>
+                          Overdue
+                        </label>
+
+                        <input type="radio" id="all-tasks" name="vertical-tabs" hidden/>
                         <label for="all-tasks" class="segmented-control__tab">
-                          <i class="fa-solid fa-list fa-sm"></i>
-                          All Tasks
+                          <i class="fa-solid fa-note-sticky fa-sm"></i>
+                          Sticky Wall
                         </label>
                     </div>
                 </div>                                                                    

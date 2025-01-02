@@ -110,6 +110,9 @@ addCategoryButton.addEventListener('click', () => {
     }
     showAddCategoryInput();
   }
+  if (NewCatInput) {
+    NewCatInput.focus();
+  }
 });
 
 document.addEventListener('click', (event) => {

@@ -120,6 +120,7 @@ ul[role="list"] {
   padding: 2rem 1rem 2rem 2rem;
   height: 100vh;
   display: flex;
+  position: relative;
   gap: 1rem;
 }
 
@@ -269,9 +270,6 @@ ul[role="list"] {
     -12px -12px 22px rgba(255, 255, 255, 1);
   color: var(--text-accent);
   font-weight: 700;
-}
-
-.collapse-btn:hover {
   scale: 1.08;
 }
 
@@ -372,6 +370,7 @@ ul[role="list"] {
 #upcoming:checked + .segmented-control__tab,
 #today:checked + .segmented-control__tab,
 #all-tasks:checked + .segmented-control__tab,
+#overdue:checked + .segmented-control__tab,
 .user-category:checked + .categories__tab {
   font-weight: 800;
   color: var(--text-accent);
@@ -386,6 +385,7 @@ ul[role="list"] {
 #upcoming:checked + .segmented-control__tab i,
 #today:checked + .segmented-control__tab i,
 #all-tasks:checked + .segmented-control__tab i,
+#overdue:checked + .segmented-control__tab i,
 .user-category:checked + .categories__tab i {
   color: var(--text-accent);
 }
@@ -400,7 +400,7 @@ ul[role="list"] {
 .inset-bg {
   position: absolute;
   left: 1.5rem;
-  top: 13rem;
+  top: 10rem;
   width: calc(100% - 3rem);
   height: 2.5rem;
   /* height: calc(100% / 10); Adjust if needed */
@@ -492,7 +492,8 @@ ul[role="list"] {
   height: 2rem;
   position: absolute;
   right: 2rem;
-  top: 2rem;
+  top: 2.5rem;
+  z-index: 3;
 }
 
 .content-view {
@@ -503,7 +504,7 @@ ul[role="list"] {
 
 .page-title {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-size: 2.5rem;
   font-weight: 700;
 }
 
@@ -554,83 +555,100 @@ ul[role="list"] {
   width: 17%;
 }
 
-.todo-item {
+.category-sticky-note {
   background-color: #fbffc6; /* Light yellow sticky note color */
-  /* border: 1px solid #f0e68c;  */
   border-radius: 8px; /* Rounded corners */
   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow for 3D effect */
   padding: 16px;
-  width: 100%; /* Fixed width for a sticky note */
+  width: 100%; /* Flexible width for the sticky note */
   height: 100%; /* Flexible height based on content */
   font-family: "Comic Sans MS", cursive, sans-serif; /* Playful sticky note font */
   color: #333; /* Text color for readability */
   overflow-wrap: break-word; /* Handle long words or text wrapping */
   transition: transform 0.2s, box-shadow 0.2s; /* Animation for hover effect */
+  cursor: pointer;
 }
 
-.todo-item:hover {
+.category-sticky-note:hover {
   transform: scale(1.05);
   box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.todo-title {
+.category-title {
   font-size: 18px;
   font-weight: bold;
   margin-bottom: 8px;
 }
 
-.todo-description {
+.category-task-list {
   font-size: 14px;
   margin-bottom: 8px;
-  color: #555; /* Slightly lighter color for descriptions */
+  color: #555; /* Slightly lighter color for task descriptions */
+  padding-left: 16px; /* Indentation for the task list */
 }
 
-.todo-due-date,
-.todo-priority,
-.todo-status {
-  font-size: 12px;
-  margin-top: 4px;
+.category-task-list li {
+  list-style-type: disc; /* Display bullet points */
 }
 
-.todo-delete-btn {
-  background-color: #f56565; /* Red button for delete */
-  border: none;
-  border-radius: 4px;
-  color: white;
-  font-size: 12px;
-  padding: 6px 12px;
-  cursor: pointer;
-  margin-top: 12px;
-}
-
-.todo-delete-btn:hover {
-  background-color: #c53030; /* Darker red on hover */
+.empty-category-message {
+  font-size: 14px;
+  margin-top: 8px;
+  color: #777; /* Slightly muted color for empty message */
 }
 
 .content-view {
+  position: relative;
   display: flex;
   flex-direction: column;
-  padding: 0 1rem;
+  gap: 1rem;
 }
 
 .content-header {
   display: flex;
+  padding: 0 1rem;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
 }
 
-.todos-grid {
+.category-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  padding: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: 1rem; /* Spacing between the sticky notes */
-  justify-items: center; /* Align sticky notes to the left */
-  align-items: center; /* Align sticky notes to the top */
+  justify-items: center; /* Align sticky notes in the center */
+  align-items: start; /* Align sticky notes to the top */
+  overflow-y: auto;
 }
 
-.empty-message {
-  grid-column: 1 / -1; /* Span the entire grid */
+.empty-message-sticky {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* grid-column: 1 / -1;  */
   text-align: center;
-  font-size: 18px;
-  color: #555;
+  font-size: 1.2rem;
+  color: #8091ac;
+  width: 100%;
+}
+
+.empty-message-todo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* grid-column: 1 / -1;  */
+  text-align: center;
+  font-size: 1.2rem;
+  color: #8091ac;
+  width: 100%;
+}
+
+.todo-item-list {
+  position: relative;
+  display: flex;
+  height: 100%;
+  padding: 0 1rem;
+  flex-direction: column;
 }
