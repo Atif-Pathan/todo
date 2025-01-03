@@ -1,6 +1,9 @@
 import './styles.css';
 import TabManager from './modules/TabManager.js';
+import TaskManager from './modules/TaskManager.js';
 import './modules/CategoryUIManager.js';
+
+TaskManager.checkOverdueTodos();
 
 // Initialize TabManager for managing tab switching
 const tabManager = new TabManager('.content-view');

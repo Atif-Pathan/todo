@@ -249,8 +249,23 @@ class TabManager {
       const todos = this.getTodosForTab(tabId);
       if (todos.length) {
         todos.forEach((todo) => {
-          const item = TodoRenderer.renderTodoItem(todo);
-          todosList.appendChild(item);
+          let showCategory = false;
+          let catName = '';
+
+          if (tabId === 'today' || tabId === 'upcoming' || tabId === 'overdue') {
+            // find the category for this todo
+            const foundCat = this.taskManager.getAllCategories().find((c) => c.getTodoById(todo.getId()));
+            if (foundCat) {
+              showCategory = true;
+              catName = foundCat.name;
+            }
+          }
+
+          const todoItem = TodoRenderer.renderTodoItem(todo, {
+            showCategory: showCategory,
+            categoryName: catName
+          });
+          todosList.appendChild(todoItem);
         });
       } else {
         const msg = document.createElement('p');
@@ -272,6 +287,9 @@ class TabManager {
   }
 
   getTodosForTab(tabId) {
+    if (tabId === 'overdue') {
+      this.taskManager.checkOverdueTodos(); 
+    }
     const today = startOfToday();
     if (tabId === 'all-tasks') {
       return this.taskManager.getAllCategories().flatMap((cat) => cat.listTodos());
@@ -289,18 +307,17 @@ class TabManager {
         .flatMap((cat) =>
           cat.listTodos().filter((td) =>
             td.getDueDate()
-              ? isAfter(parseISO(td.getDueDate()), today) && td.getStatus() === 'incomplete'
+              ? isAfter(parseISO(td.getDueDate()), today)
               : null
           )
         );
     } else if (tabId === 'overdue') {
-      this.taskManager.checkOverdueTodos();
       return this.taskManager
         .getAllCategories()
         .flatMap((cat) =>
           cat.listTodos().filter((td) =>
             td.getDueDate()
-              ? isBefore(parseISO(td.getDueDate()), today) && td.getStatus() === 'overdue'
+              ? isBefore(parseISO(td.getDueDate()), today)
               : null
           )
         );

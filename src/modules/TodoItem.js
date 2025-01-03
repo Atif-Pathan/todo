@@ -28,6 +28,8 @@ class TodoItem {
 
     this.createdDate = startOfDay(new Date(createdDate));
     this.updatedDate = startOfDay(new Date(updatedDate));
+
+    this.checkOverdue();
   }
 
   // Private method to trigger contentUpdated event
@@ -121,6 +123,7 @@ class TodoItem {
     }
     if (this.status !== newStatus) {
       this.status = newStatus;
+      this.checkOverdue();
       this._updateTimestamp();
   
       // ONLY dispatch contentUpdated if not silent
@@ -148,10 +151,12 @@ class TodoItem {
   }
 
   checkOverdue(currentDate = new Date(), { silent = false } = {}) {
-    const isAlreadyOverdue = (this.status === 'overdue');
-    // If dueDate is in the past, and not already “overdue,” 
-    // set status => “overdue” but possibly skip event
-    if (this.dueDate && isBefore(this.dueDate, startOfDay(currentDate)) && !isAlreadyOverdue) {
+    // Only set to overdue if we’re not 'complete' and not already 'overdue'
+    if (this.status !== 'complete'
+        && this.dueDate
+        && isBefore(this.dueDate, startOfDay(currentDate))
+        && this.status !== 'overdue'
+    ) {
       this.setStatus('overdue', { silent });
     }
   }

@@ -652,3 +652,82 @@ ul[role="list"] {
   padding: 0 1rem;
   flex-direction: column;
 }
+
+/* Container for the entire row */
+.todo-item-row {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid #ccc;
+  transition: background-color 0.2s ease;
+}
+
+/* Completed tasks get strikethrough and slight fade */
+.todo-item-row.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Overdue highlight (optional) */
+.todo-item-row.overdue {
+  background-color: #ffe6e6; /* light red tint, for example */
+}
+
+/* Small gap for the checkbox */
+.todo-checkbox {
+  margin-right: 0.5rem;
+}
+
+/* Title flexes to fill space */
+.todo-title {
+  flex: 1;
+  font-weight: 600;
+}
+
+/* Priority badge styling; color-coded by priority */
+.todo-priority {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+.todo-priority.priority-low {
+  background-color: #d4edda;
+}
+.todo-priority.priority-medium {
+  background-color: #fff3cd;
+}
+.todo-priority.priority-high {
+  background-color: #f8d7da;
+}
+
+/* Category badge if shown in "global" tabs */
+.todo-category-badge {
+  margin-left: 0.5rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  background-color: #e1e1e1;
+  font-size: 0.8rem;
+}
+
+/* Edit button styling (optional) */
+.edit-todo-btn {
+  margin-left: 0.5rem;
+  background-color: #eee;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  border-radius: 3px;
+  padding: 0.3rem 0.5rem;
+}
+.edit-todo-btn:hover {
+  background-color: #ddd;
+}
+
+/* Minimal styling for the due date */
+.todo-due-date {
+  margin-left: 0.5rem;
+  color: #666;
+  font-size: 0.9rem;
+}

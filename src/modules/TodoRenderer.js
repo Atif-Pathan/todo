@@ -1,56 +1,83 @@
 class TodoRenderer {
-    /**
-     * Renders a single todo item as an HTML element styled as a sticky note.
-     * @param {Object} todo - The todo item.
-     * @returns {HTMLElement} - The rendered todo item element.
-     */
-    static renderTodoItem(todo) {
-      const todoItem = document.createElement('div');
-      todoItem.classList.add('todo-item');
-  
-      const title = document.createElement('h3');
-      title.textContent = todo.getTitle();
-      title.classList.add('todo-title');
-  
-      const description = document.createElement('p');
-      description.textContent = todo.getDescription() || 'No description provided.';
-      description.classList.add('todo-description');
-  
-      const dueDate = document.createElement('p');
-      dueDate.textContent = `Due: ${todo.getDueDate() || 'No due date'}`;
-      dueDate.classList.add('todo-due-date');
-  
-      const priority = document.createElement('p');
-      priority.textContent = `Priority: ${todo.getPriority()}`;
-      priority.classList.add('todo-priority', `priority-${todo.getPriority()}`);
-  
-      const status = document.createElement('p');
-      status.textContent = `Status: ${todo.getStatus()}`;
-      status.classList.add('todo-status', `status-${todo.getStatus()}`);
-  
-      // Add a delete button for the todo item
-      const deleteButton = document.createElement('button');
-      deleteButton.textContent = 'Delete';
-      deleteButton.classList.add('todo-delete-btn');
-      deleteButton.addEventListener('click', () => {
-        const category = todo.getCategory(); // Assuming `getCategory` exists on todo
-        if (category) {
-          category.removeTodoById(todo.getId());
-          document.dispatchEvent(new CustomEvent('contentUpdated'));
-        }
-      });
-  
-      // Append elements to the todo item container
-      todoItem.appendChild(title);
-      todoItem.appendChild(description);
-      todoItem.appendChild(dueDate);
-      todoItem.appendChild(priority);
-      todoItem.appendChild(status);
-      todoItem.appendChild(deleteButton);
-  
-      return todoItem;
+  /**
+   * Renders a single todo item as a row-based HTML element.
+   * @param {Object} todo - The todo item (instance of TodoItem).
+   * @param {Object} [options={}] - Additional options.
+   * @param {boolean} [options.showCategory=false] - Whether to display category label.
+   * @param {string} [options.categoryName=''] - If you already know the category name.
+   * @returns {HTMLElement} - The rendered row element.
+   */
+  static renderTodoItem(todo, { showCategory = false, categoryName = '' } = {}) {
+    // Create the main container for the row
+    const row = document.createElement('div');
+    row.classList.add('todo-item-row');
+
+    // Completed? Then add 'completed' class
+    if (todo.getStatus() === 'complete') {
+      row.classList.add('completed');
     }
+    // Overdue? Then add 'overdue' class (optional)
+    if (todo.getStatus() === 'overdue') {
+      row.classList.add('overdue');
+    }
+
+    // Checkbox to toggle complete/incomplete
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.classList.add('todo-checkbox');
+    // If the current status is 'complete', check the box
+    checkbox.checked = (todo.getStatus() === 'complete');
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        todo.setStatus('complete');
+      } else {
+        todo.setStatus('incomplete');
+      }
+      // The 'setStatus' call should handle dispatching 'contentUpdated'
+      // and also your localStorage save, if implemented that way.
+    });
+    row.appendChild(checkbox);
+
+    // Title
+    const titleSpan = document.createElement('span');
+    titleSpan.classList.add('todo-title');
+    titleSpan.textContent = todo.getTitle();
+    row.appendChild(titleSpan);
+
+    // Priority label
+    const prioritySpan = document.createElement('span');
+    prioritySpan.classList.add('todo-priority', `priority-${todo.getPriority()}`);
+    prioritySpan.textContent = `Priority: ${todo.getPriority()}`;
+    row.appendChild(prioritySpan);
+
+    // If we’re in a "global" tab (today, upcoming, overdue), show category
+    if (showCategory && categoryName) {
+      const categoryBadge = document.createElement('span');
+      categoryBadge.classList.add('todo-category-badge');
+      categoryBadge.textContent = categoryName;
+      row.appendChild(categoryBadge);
+    }
+
+    // Due date
+    const dueDate = todo.getDueDate();
+    const dueSpan = document.createElement('span');
+    dueSpan.classList.add('todo-due-date');
+    dueSpan.textContent = dueDate ? `Due: ${dueDate}` : 'No due date';
+    row.appendChild(dueSpan);
+
+    // (Optional) Edit button (no real functionality yet)
+    const editBtn = document.createElement('button');
+    editBtn.classList.add('edit-todo-btn');
+    editBtn.textContent = 'Edit';
+    // Potentially add logic, e.g. open an "edit" modal
+    editBtn.addEventListener('click', () => {
+      // TODO: open edit form or do something
+      alert('TODO: Implement edit modal or logic!');
+    });
+    row.appendChild(editBtn);
+
+    return row;
+  }
 }
-  
+
 export default TodoRenderer;
-  

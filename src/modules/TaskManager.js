@@ -214,7 +214,7 @@ class TaskManager {
 
     // Only persist to localStorage if any statuses actually changed
     if (changed) {
-      this._saveToStorage();
+      this.saveToLocalStorage();
     }
   }
 
