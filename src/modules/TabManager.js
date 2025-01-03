@@ -294,6 +294,7 @@ class TabManager {
           )
         );
     } else if (tabId === 'overdue') {
+      this.taskManager.checkOverdueTodos();
       return this.taskManager
         .getAllCategories()
         .flatMap((cat) =>

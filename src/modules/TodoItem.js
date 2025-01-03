@@ -114,15 +114,19 @@ class TodoItem {
     }
   }
 
-  setStatus(newStatus) {
-    const validStatuses = ["incomplete", "complete", "overdue"];
+  setStatus(newStatus, { silent = false } = {}) {
+    const validStatuses = ['incomplete', 'complete', 'overdue'];
     if (!validStatuses.includes(newStatus)) {
       throw new Error("Status must be 'incomplete', 'complete', or 'overdue'.");
     }
     if (this.status !== newStatus) {
       this.status = newStatus;
       this._updateTimestamp();
-      this._triggerContentUpdated(); // Trigger update only if data changes
+  
+      // ONLY dispatch contentUpdated if not silent
+      if (!silent) {
+        this._triggerContentUpdated();
+      }
     }
   }
 
@@ -143,11 +147,12 @@ class TodoItem {
     }
   }
 
-  checkOverdue(currentDate = new Date()) {
-    if (this.dueDate && isBefore(this.dueDate, startOfDay(currentDate)) && this.status !== "overdue") {
-      this.status = "overdue";
-      this._updateTimestamp();
-      this._triggerContentUpdated(); // Trigger update only if status changes
+  checkOverdue(currentDate = new Date(), { silent = false } = {}) {
+    const isAlreadyOverdue = (this.status === 'overdue');
+    // If dueDate is in the past, and not already “overdue,” 
+    // set status => “overdue” but possibly skip event
+    if (this.dueDate && isBefore(this.dueDate, startOfDay(currentDate)) && !isAlreadyOverdue) {
+      this.setStatus('overdue', { silent });
     }
   }
 

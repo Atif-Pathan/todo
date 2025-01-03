@@ -196,13 +196,26 @@ class TaskManager {
 
   checkOverdueTodos() {
     const currentDate = new Date();
+    let changed = false;
+
     this.categories.forEach((category) => {
       category.listTodos().forEach((todo) => {
-        todo.checkOverdue(currentDate);
+        const wasOverdue = (todo.getStatus() === 'overdue');
+        // "Silent" check: it will update the todo’s status, 
+        // but skip `_triggerContentUpdated()` calls if coming from here
+        todo.checkOverdue(currentDate, { silent: true }); 
+        
+        // If just changed from not-overdue => overdue:
+        if (!wasOverdue && todo.getStatus() === 'overdue') {
+          changed = true;
+        }
       });
     });
-    this.saveToLocalStorage(); // Save changes to localStorage
-    this._triggerContentUpdated(); // Trigger update
+
+    // Only persist to localStorage if any statuses actually changed
+    if (changed) {
+      this._saveToStorage();
+    }
   }
 
   // -- Filtering & Sorting (Global for all todos) --
