@@ -207,7 +207,7 @@ ul[role="list"] {
 
 .nav.collapsed {
   padding: 1.5rem 1rem;
-  width: 5vw; /* Shrinks the nav bar */
+  width: 4.5rem; /* Shrinks the nav bar */
   min-width: 0;
 }
 
@@ -628,19 +628,19 @@ ul[role="list"] {
   transform: translate(-50%, -50%);
   /* grid-column: 1 / -1;  */
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #8091ac;
   width: 100%;
 }
 
 .empty-message-todo {
   position: absolute;
-  top: 50%;
+  top: 43%;
   left: 50%;
   transform: translate(-50%, -50%);
   /* grid-column: 1 / -1;  */
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
   color: #8091ac;
   width: 100%;
 }

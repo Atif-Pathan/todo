@@ -3,26 +3,38 @@ import { format, isBefore, startOfDay } from "date-fns";
 
 class TodoItem {
   constructor({
+    id = uuidv4(), // Use provided id (e.g., from localStorage) or generate a new one
     title,
     description = "",
     dueDate = null,
     priority = "low",
     status = "incomplete",
+    createdDate = startOfDay(new Date()), // Use provided date or current date
+    updatedDate = startOfDay(new Date()),
   } = {}) {
     if (!title) {
       throw new Error("Title is required for a TodoItem.");
     }
-    this.id = uuidv4();
+
+    this.id = id;
     this.title = title;
     this.description = description;
 
     // Normalize the dueDate to local midnight using startOfDay
-    this.dueDate = dueDate ? startOfDay(dueDate) : null;
+    this.dueDate = dueDate ? startOfDay(new Date(dueDate)) : null;
 
     this.priority = priority;
     this.status = status;
-    this.createdDate = startOfDay(new Date());
-    this.updatedDate = this.createdDate;
+
+    this.createdDate = startOfDay(new Date(createdDate));
+    this.updatedDate = startOfDay(new Date(updatedDate));
+  }
+
+  // Private method to trigger contentUpdated event
+  _triggerContentUpdated() {
+    const event = new CustomEvent("contentUpdated");
+    document.dispatchEvent(event);
+    console.log("Content updated event triggered. IN TODOITEM");
   }
 
   // Getters
@@ -63,21 +75,31 @@ class TodoItem {
     if (!newTitle) {
       throw new Error("Title cannot be empty.");
     }
-    this.title = newTitle;
-    this._updateTimestamp();
+    if (this.title !== newTitle) {
+      this.title = newTitle;
+      this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update only if data changes
+    }
   }
 
   setDescription(newDescription) {
-    this.description = newDescription;
-    this._updateTimestamp();
+    if (this.description !== newDescription) {
+      this.description = newDescription;
+      this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update only if data changes
+    }
   }
 
   setDueDate(newDueDate) {
     if (!newDueDate) {
       throw new Error("Invalid date.");
     }
-    this.dueDate = startOfDay(new Date(newDueDate));
-    this._updateTimestamp();
+    const normalizedDate = startOfDay(new Date(newDueDate));
+    if (this.dueDate === null || this.dueDate.getTime() !== normalizedDate.getTime()) {
+      this.dueDate = normalizedDate;
+      this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update only if data changes
+    }
   }
 
   setPriority(newPriority) {
@@ -85,8 +107,11 @@ class TodoItem {
     if (!validPriorities.includes(newPriority)) {
       throw new Error("Priority must be 'low', 'medium', or 'high'.");
     }
-    this.priority = newPriority;
-    this._updateTimestamp();
+    if (this.priority !== newPriority) {
+      this.priority = newPriority;
+      this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update only if data changes
+    }
   }
 
   setStatus(newStatus) {
@@ -94,25 +119,35 @@ class TodoItem {
     if (!validStatuses.includes(newStatus)) {
       throw new Error("Status must be 'incomplete', 'complete', or 'overdue'.");
     }
-    this.status = newStatus;
-    this._updateTimestamp();
+    if (this.status !== newStatus) {
+      this.status = newStatus;
+      this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update only if data changes
+    }
   }
 
   // Utility Methods
   markAsComplete() {
-    this.status = "complete";
-    this._updateTimestamp();
+    if (this.status !== "complete") {
+      this.status = "complete";
+      this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update
+    }
   }
 
   markAsIncomplete() {
-    this.status = "incomplete";
-    this._updateTimestamp();
+    if (this.status !== "incomplete") {
+      this.status = "incomplete";
+      this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update
+    }
   }
 
   checkOverdue(currentDate = new Date()) {
-    if (this.dueDate && isBefore(this.dueDate, startOfDay(currentDate))) {
+    if (this.dueDate && isBefore(this.dueDate, startOfDay(currentDate)) && this.status !== "overdue") {
       this.status = "overdue";
       this._updateTimestamp();
+      this._triggerContentUpdated(); // Trigger update only if status changes
     }
   }
 
@@ -120,9 +155,37 @@ class TodoItem {
     return this.dueDate && isBefore(this.dueDate, startOfDay(currentDate));
   }
 
+  // Serialization Method: Convert the TodoItem to a plain object
+  toJSON() {
+    return {
+      id: this.id,
+      title: this.title,
+      description: this.description,
+      dueDate: this.dueDate ? this.dueDate.toISOString() : null, // Store as ISO string
+      priority: this.priority,
+      status: this.status,
+      createdDate: this.createdDate.toISOString(),
+      updatedDate: this.updatedDate.toISOString(),
+    };
+  }
+
+  // Deserialization Method: Create a TodoItem from a plain object
+  static fromJSON(jsonData) {
+    return new TodoItem({
+      id: jsonData.id,
+      title: jsonData.title,
+      description: jsonData.description,
+      dueDate: jsonData.dueDate ? new Date(jsonData.dueDate) : null,
+      priority: jsonData.priority,
+      status: jsonData.status,
+      createdDate: new Date(jsonData.createdDate),
+      updatedDate: new Date(jsonData.updatedDate),
+    });
+  }
+
   // Private method to update the timestamp after each setter is called
   _updateTimestamp() {
-    this.updatedDate = startOfDay(new Date());    
+    this.updatedDate = startOfDay(new Date());
   }
 }
 

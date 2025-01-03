@@ -4,6 +4,7 @@ import TodoItem from "./TodoItem.js";
 class TaskManager {
   static instance;
   static defaultCategoryName = "General";
+  static STORAGE_KEY = "TASK_MANAGER_DATA";
 
   constructor() {
     if (TaskManager.instance) {
@@ -11,8 +12,27 @@ class TaskManager {
     }
 
     this.categories = [];
-    this._ensureDefaultCategory();
-    TaskManager.instance = this; // Store the new instance, is no instance existed
+    this._loadFromStorage(); // Load data from localStorage if available
+    this._ensureDefaultCategory(); // Ensure default category exists
+
+    this._setupEventListeners(); // Setup listeners for global events
+
+    TaskManager.instance = this; // Store the new instance
+  }
+
+  // Private method to trigger contentUpdated event
+  _triggerContentUpdated() {
+    const event = new CustomEvent("contentUpdated");
+    document.dispatchEvent(event);
+    console.log("TaskManager: contentUpdated event triggered");
+  }
+
+  // Set up global event listeners
+  _setupEventListeners() {
+    document.addEventListener("contentUpdated", () => {
+      console.log("TaskManager: contentUpdated event detected");
+      this.saveToLocalStorage(); // Save to localStorage whenever content is updated
+    });
   }
 
   _ensureDefaultCategory() {
@@ -22,8 +42,40 @@ class TaskManager {
         (cat) => cat.name === TaskManager.defaultCategoryName
       )
     ) {
-      this.categories.push(new Category(TaskManager.defaultCategoryName));     
+      this.categories.push(new Category(TaskManager.defaultCategoryName));
+      this.saveToLocalStorage(); // Save changes to localStorage
     }
+  }
+
+  // -- Local Storage Methods --
+  _saveToStorage() {
+    const data = this.categories.map((category) => category.toJSON());
+    localStorage.setItem(TaskManager.STORAGE_KEY, JSON.stringify(data));
+  }
+
+  _loadFromStorage() {
+    const data = localStorage.getItem(TaskManager.STORAGE_KEY);
+    if (data) {
+      try {
+        const parsedData = JSON.parse(data);
+        this.categories = parsedData.map((categoryData) =>
+          Category.fromJSON(categoryData)
+        );
+      } catch (error) {
+        console.error("Failed to load data from localStorage:", error);
+        this.categories = [];
+      }
+    }
+  }
+
+  saveToLocalStorage() {
+    this._saveToStorage();
+    console.log("TaskManager: Data saved to localStorage");
+  }
+
+  loadFromLocalStorage() {
+    this._loadFromStorage();
+    this._triggerContentUpdated();
   }
 
   // -- Category Management --
@@ -32,10 +84,20 @@ class TaskManager {
   }
 
   createCategory(name) {
-    if (this.categories.find((cat) => cat.name.toLowerCase() === name.toLowerCase())) {
+    if (
+      this.categories.find((cat) => cat.name.toLowerCase() === name.toLowerCase())
+    ) {
       throw new Error(`Category "${name}" already exists.`);
     }
-    this.categories.push(new Category(name));
+    const category = new Category(name);
+    this.categories.push(category);
+    console.log("category created:");
+    console.log("\n\n\n\n");
+    
+    console.log(this.categories);
+    
+    this.saveToLocalStorage(); // Save changes to localStorage
+    this._triggerContentUpdated(); // Trigger update
   }
 
   getCategoryByName(name) {
@@ -48,6 +110,8 @@ class TaskManager {
       throw new Error(`Category "${name}" not found.`);
     }
     this.categories.splice(index, 1);
+    this.saveToLocalStorage(); // Save changes to localStorage
+    this._triggerContentUpdated(); // Trigger update
   }
 
   renameCategory(oldName, newName) {
@@ -55,10 +119,14 @@ class TaskManager {
     if (!category) {
       throw new Error(`Category "${oldName}" not found.`);
     }
-    if (this.categories.find((cat) => cat.name.toLowerCase() === newName.toLowerCase())) {
+    if (
+      this.categories.find((cat) => cat.name.toLowerCase() === newName.toLowerCase())
+    ) {
       throw new Error(`Category "${newName}" already exists.`);
     }
     category.name = newName;
+    this.saveToLocalStorage(); // Save changes to localStorage
+    this._triggerContentUpdated(); // Trigger update
   }
 
   // -- Todo Management (within a category) --
@@ -69,6 +137,7 @@ class TaskManager {
     }
     const todo = new TodoItem(todoDetails);
     category.addTodo(todo);
+    // No need to trigger _triggerContentUpdated() here; Category handles it
   }
 
   deleteTodo(todoId, categoryName) {
@@ -77,13 +146,8 @@ class TaskManager {
       throw new Error(`Category "${categoryName}" not found.`);
     }
 
-    const todo = category.getTodoById(todoId);
-    if (!todo) {
-      throw new Error(
-        `Todo with ID "${todoId}" not found in category "${categoryName}".`
-      );
-    }
     category.removeTodo(todoId);
+    // No need to trigger _triggerContentUpdated() here; Category handles it
   }
 
   updateTodo(todoId, categoryName, updatedDetails) {
@@ -104,6 +168,8 @@ class TaskManager {
     if (updatedDetails.dueDate) todo.setDueDate(updatedDetails.dueDate);
     if (updatedDetails.priority) todo.setPriority(updatedDetails.priority);
     if (updatedDetails.status) todo.setStatus(updatedDetails.status);
+
+    // No need to trigger _triggerContentUpdated() here; TodoItem handles it
   }
 
   moveTodo(todoId, fromCategoryName, toCategoryName) {
@@ -125,17 +191,19 @@ class TaskManager {
     }
     fromCategory.removeTodo(todoId);
     toCategory.addTodo(todo);
+    // No need to trigger _triggerContentUpdated() here; Category handles it
   }
 
   checkOverdueTodos() {
     const currentDate = new Date();
     this.categories.forEach((category) => {
-      category.todos.forEach((todo) => {
-        // use todoItem utility method
+      category.listTodos().forEach((todo) => {
         todo.checkOverdue(currentDate);
       });
     });
-  }  
+    this.saveToLocalStorage(); // Save changes to localStorage
+    this._triggerContentUpdated(); // Trigger update
+  }
 
   // -- Filtering & Sorting (Global for all todos) --
   getTodosByStatus(status) {
@@ -147,7 +215,7 @@ class TaskManager {
     }
 
     return this.categories.flatMap((cat) =>
-      cat.todos.filter((todo) => todo.getStatus() === status)
+      cat.listTodos().filter((todo) => todo.getStatus() === status)
     );
   }
 
@@ -160,7 +228,7 @@ class TaskManager {
     }
 
     return this.categories.flatMap((cat) =>
-      cat.todos.filter((todo) => todo.getPriority() === priority)
+      cat.listTodos().filter((todo) => todo.getPriority() === priority)
     );
   }
 
@@ -172,11 +240,9 @@ class TaskManager {
       );
     }
 
-    // We want to maintain references to actual TodoItems but also track the category name
-    // so let's keep them as objects containing { todo, categoryName }
     return this.categories
       .flatMap((cat) =>
-        cat.todos.map((todo) => ({ todo, categoryName: cat.name }))
+        cat.listTodos().map((todo) => ({ todo, categoryName: cat.name }))
       )
       .sort((a, b) => {
         let comparison = 0;
@@ -188,9 +254,9 @@ class TaskManager {
           if (dateA && dateB) {
             comparison = dateA - dateB;
           } else if (!dateA && dateB) {
-            comparison = -1; 
+            comparison = -1;
           } else if (dateA && !dateB) {
-            comparison = 1; 
+            comparison = 1;
           }
         } else if (property === "priority") {
           const priorityOrder = { low: 1, medium: 2, high: 3 };
@@ -215,7 +281,7 @@ class TaskManager {
       overdue: 0,
     };
 
-    category.todos.forEach((todo) => {
+    category.listTodos().forEach((todo) => {
       const status = todo.getStatus();
       if (status === "incomplete") stats.incomplete++;
       if (status === "complete") stats.complete++;
