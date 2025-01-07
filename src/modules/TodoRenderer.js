@@ -1,3 +1,5 @@
+import TaskManager from "./TaskManager";
+
 class TodoRenderer {
   /**
    * Renders a single todo item as a row-based HTML element.
@@ -7,7 +9,7 @@ class TodoRenderer {
    * @param {string} [options.categoryName=''] - If you already know the category name.
    * @returns {HTMLElement} - The rendered row element.
    */
-  static renderTodoItem(todo, { showCategory = false, categoryName = '' } = {}) {
+  static renderTodoItem(todo, { showCategory = false, categoryName = '', tabId = '' } = {}) {
     // Create the main container for the row
     const row = document.createElement('div');
     row.classList.add('todo-item-row');
@@ -19,12 +21,15 @@ class TodoRenderer {
     // Overdue? Then add 'overdue' class (optional)
     if (todo.getStatus() === 'overdue') {
       row.classList.add('overdue');
+    } else {
+      row.classList.remove('overdue');
     }
 
     // Checkbox to toggle complete/incomplete
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.classList.add('todo-checkbox');
+    checkbox.id = `todo-item-${todo.getId()}`;
     // If the current status is 'complete', check the box
     checkbox.checked = (todo.getStatus() === 'complete');
     checkbox.addEventListener('change', () => {
@@ -39,15 +44,16 @@ class TodoRenderer {
     row.appendChild(checkbox);
 
     // Title
-    const titleSpan = document.createElement('span');
-    titleSpan.classList.add('todo-title');
-    titleSpan.textContent = todo.getTitle();
-    row.appendChild(titleSpan);
+    const titleLabel = document.createElement('label');
+    titleLabel.classList.add('todo-title');
+    titleLabel.htmlFor = `todo-item-${todo.getId()}`;
+    titleLabel.textContent = todo.getTitle();
+    row.appendChild(titleLabel);
 
     // Priority label
     const prioritySpan = document.createElement('span');
     prioritySpan.classList.add('todo-priority', `priority-${todo.getPriority()}`);
-    prioritySpan.textContent = `Priority: ${todo.getPriority()}`;
+    prioritySpan.textContent = `${todo.getPriority()}`;
     row.appendChild(prioritySpan);
 
     // If we’re in a "global" tab (today, upcoming, overdue), show category
@@ -68,13 +74,53 @@ class TodoRenderer {
     // (Optional) Edit button (no real functionality yet)
     const editBtn = document.createElement('button');
     editBtn.classList.add('edit-todo-btn');
-    editBtn.textContent = 'Edit';
+    editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+    editBtn.title = "Edit todo item";
     // Potentially add logic, e.g. open an "edit" modal
     editBtn.addEventListener('click', () => {
-      // TODO: open edit form or do something
-      alert('TODO: Implement edit modal or logic!');
+      let catToUpdate;
+      if (categoryName) {
+        catToUpdate = categoryName;
+      } else if (tabId) {
+        catToUpdate = tabId.replace('category-', '');  
+      }
+      console.log(`${catToUpdate} is the cat to be updated`);
+      
+      import('../components/EmbedForm.js').then(({openEmbeddedForm}) => openEmbeddedForm(tabId, true, todo.getId(), catToUpdate));
+
+      if (todo.getStatus() === 'overdue') {
+        row.classList.add('overdue');
+      } else {
+        row.classList.remove('overdue');
+      }
     });
     row.appendChild(editBtn);
+
+    const deleteTodoBtn = document.createElement('button');
+    deleteTodoBtn.classList.add('delete-todo-btn');
+    deleteTodoBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+    deleteTodoBtn.title = "Delete todo item";
+    deleteTodoBtn.addEventListener('click', () => {
+      let catToDelete;
+      if (categoryName) {
+        catToDelete = categoryName;
+      } else if (tabId) {
+        catToDelete = tabId.replace('category-', '');  
+      }
+      const confirmDelete = confirm('Are you sure you want to delete this todo?');
+      if (!confirmDelete) return;
+      TaskManager.deleteTodo(todo.getId(), catToDelete);
+      row.remove();
+      if ((catToDelete !== "upcoming" || catToDelete !== "today") && catToDelete === tabId.replace('category-', '')) {
+        const radioId = `category-${catToDelete}`;
+        const radioBtn = document.getElementById(radioId);
+        if (radioBtn) {
+          radioBtn.checked = true;
+        }
+      }
+      
+    });
+    row.appendChild(deleteTodoBtn);
 
     return row;
   }

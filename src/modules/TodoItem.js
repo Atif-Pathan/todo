@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { format, isBefore, startOfDay } from "date-fns";
+import { format, isBefore, startOfDay, isAfter, isEqual } from "date-fns";
 
 class TodoItem {
   constructor({
@@ -99,6 +99,9 @@ class TodoItem {
     const normalizedDate = startOfDay(new Date(newDueDate));
     if (this.dueDate === null || this.dueDate.getTime() !== normalizedDate.getTime()) {
       this.dueDate = normalizedDate;
+      this.checkOverdue();
+      console.log("date changed so called check overdue");
+      
       this._updateTimestamp();
       this._triggerContentUpdated(); // Trigger update only if data changes
     }
@@ -151,15 +154,27 @@ class TodoItem {
   }
 
   checkOverdue(currentDate = new Date(), { silent = false } = {}) {
-    // Only set to overdue if we’re not 'complete' and not already 'overdue'
-    if (this.status !== 'complete'
-        && this.dueDate
-        && isBefore(this.dueDate, startOfDay(currentDate))
-        && this.status !== 'overdue'
-    ) {
-      this.setStatus('overdue', { silent });
+    console.log(`${currentDate} - current date`);
+    console.log(`${this.dueDate} - due date`);
+    
+    if (this.status === 'complete') {
+      // If the task is marked as complete, don't change its status
+      return;
+    }
+  
+    if (this.dueDate && isBefore(this.dueDate, startOfDay(currentDate))) {
+      // If the due date is before today, set it to 'overdue'
+      if (this.status !== 'overdue') {
+        this.setStatus('overdue', { silent });
+      }
+    } else if (this.dueDate && (isAfter(this.dueDate, startOfDay(currentDate)) || isEqual(this.dueDate, startOfDay(currentDate)))) {
+      // If the due date is after today, set it back to 'incomplete'
+      if (this.status !== 'incomplete') {
+        this.setStatus('incomplete', { silent });
+      }
     }
   }
+  
 
   isOverdue(currentDate = new Date()) {
     return this.dueDate && isBefore(this.dueDate, startOfDay(currentDate));

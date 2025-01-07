@@ -21,7 +21,7 @@ class CategoryUIManager {
   renderCategories() {
     // Clear the existing categories container
     this.categoriesContainer.innerHTML = '';
-    console.log("call render category\n");
+    console.log("call render category");
     
 
     const categories = TaskManager.getAllCategories();
@@ -60,6 +60,7 @@ class CategoryUIManager {
     input.id = `category-${categoryName}`;
     input.name = 'vertical-categories';
     input.hidden = true;
+    // input.checked = true;
 
     // Create a label for the category
     const label = document.createElement('label');
@@ -75,11 +76,16 @@ class CategoryUIManager {
     this.categoriesContainer.appendChild(label);
 
     // Select the new category if required
+    console.log(selectNewCategory);
+    
     if (selectNewCategory) {
       input.checked = true;
+      console.log(`radio checked for ${selectNewCategory}`);
 
       // Optionally, dispatch a 'change' event to trigger any associated listeners
       const event = new Event('change', { bubbles: true });
+      console.log("change even emitted in cat ui mang");
+      
       input.dispatchEvent(event);
     }
   }

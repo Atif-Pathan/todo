@@ -1,7 +1,16 @@
 import TaskManager from "../modules/TaskManager.js";
 
-export function openEmbeddedForm(currentTabId = null) {
+export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = null, categoryName = null) {
 
+  const row = document.querySelector(".todo-item-row");
+  console.log(categoryName);
+  console.log(todoId);
+  let currentCategory = null;
+  let todoItemRow = null;
+  if (categoryName && todoId) {
+    currentCategory = TaskManager.getCategoryByName(categoryName);
+    todoItemRow = currentCategory.getTodoById(todoId);
+  }
   const contentView = document.querySelector(".content-view");
   if (!contentView) return console.warn("No .content-view found!");
 
@@ -24,6 +33,15 @@ export function openEmbeddedForm(currentTabId = null) {
   titleInput.required = true;
   titleInput.id = "title";
   titleInput.placeholder = "Title";
+  titleInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && titleInput.value.trim()) {
+      if (editRow) {
+        handleUpdateTodo();
+      } else {
+        handleCreateTodo();
+      }
+    }
+  })
 //   titleDiv.appendChild(titleLabel);
   titleDiv.appendChild(titleInput);
 
@@ -50,14 +68,14 @@ export function openEmbeddedForm(currentTabId = null) {
   dueDateInput.type = "date";
   dueDateInput.id = "select-date";
 
-  if (currentTabId && currentTabId.startsWith("today")) {
+  // if (currentTabId && currentTabId.startsWith("today")) {
     // pre-populate date to today
     const today = new Date(); // Get today's date
     const year = today.getFullYear(); // Get the year
     const month = String(today.getMonth() + 1).padStart(2, '0'); // Get the month, pad to 2 digits
     const day = String(today.getDate()).padStart(2, '0'); // Get the day, pad to 2 digits
     dueDateInput.value = `${year}-${month}-${day}`;
-  }
+  // }
    
   dueDateDiv.appendChild(dueDateLabel);
   dueDateDiv.appendChild(dueDateInput);
@@ -172,7 +190,13 @@ export function openEmbeddedForm(currentTabId = null) {
 
   const createButton = document.createElement("button");
   createButton.textContent = "Create";
-  createButton.addEventListener("click", handleCreateTodo);
+  createButton.addEventListener("click", () => {
+    if (editRow) {
+      handleUpdateTodo();
+    } else {
+      handleCreateTodo();
+    }
+  });
 
   const cancelButton = document.createElement("button");
   cancelButton.textContent = "Cancel";
@@ -213,6 +237,54 @@ export function openEmbeddedForm(currentTabId = null) {
     contentView.appendChild(formContainer);
   }
 
+  if (editRow && todoItemRow) {
+    titleInput.value = todoItemRow.getTitle();
+    descriptionInput.value = todoItemRow.getDescription();
+    categorySelect.value = categoryName;
+    prioritySelect.value  = todoItemRow.getPriority();
+    dueDateInput.value = todoItemRow.getDueDate();
+  }
+
+  function handleUpdateTodo() {
+    // console.log("updated");
+    
+    const updatedDetails = {
+      title: titleInput.value.trim(),
+      description: descriptionInput.value.trim(),
+      dueDate: dueDateInput.value ? parseDueDate(dueDateInput.value) : null,
+      priority: prioritySelect.value,
+      // status: todoItemRow.getStatus()
+    };
+    // update first
+    TaskManager.updateTodo(todoId, categoryName, updatedDetails);
+    console.log("todo updated!");
+    console.log(categoryName);
+    console.log(currentTabId);
+    // then move if needed
+    if (categorySelect.value !== categoryName) {
+      // need to update category/ move todo
+      // throw new Error("error, cant change category");
+      TaskManager.moveTodo(todoId, categoryName, categorySelect.value);
+      console.log(`moved todo from ${categoryName} to ${categorySelect.value}`);
+    }   
+    if ((categoryName !== "upcoming" || categoryName !== "today") && categoryName === currentTabId.replace('category-', '')) {
+      const radioId = `category-${categoryName}`;
+      const radioBtn = document.getElementById(radioId);
+      if (radioBtn) {
+        radioBtn.checked = true;
+        console.log(`radio btn checked for: ${radioId}`);
+        console.log(`current tab: ${currentTabId}`);
+      }
+      console.log(`current status: ${todoItemRow.getStatus()}`);
+    }
+    if (todoItemRow.getStatus() === 'overdue') {
+      row.classList.add('overdue');
+    } else {
+      row.classList.remove('overdue');
+    }
+    handleCancel();
+  }
+
   // === CREATE BUTTON LOGIC ===
   function handleCreateTodo() {
     const todoDetails = {
@@ -251,6 +323,8 @@ export function openEmbeddedForm(currentTabId = null) {
       const radioEl = document.getElementById(radioId);
       if (radioEl) {
         radioEl.checked = true;
+        console.log(`${radioId} checked`);
+        
         const evt = new Event("change", { bubbles: true });
         radioEl.dispatchEvent(evt);
       }
@@ -272,4 +346,7 @@ export function openEmbeddedForm(currentTabId = null) {
       formContainer.parentNode.removeChild(formContainer);
     }
   }
+
+  titleInput.focus();
+
 }

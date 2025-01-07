@@ -30,6 +30,12 @@ class TabManager {
     this.NewCatInput = document.getElementById('add-new-category');
     this.submitNewCatButton = document.querySelector('.add-cat');
 
+    // "Add Todo" button -> opens modal
+    this.addTodoButton = document.querySelector('.add-todo-btn');
+    this.addTodoButton.addEventListener('click', () => {
+      import('../components/EmbedForm.js').then(({openEmbeddedForm}) => openEmbeddedForm(this.currentTabId));
+    });
+
     // The <nav> element (for radio–change handling)
     this.nav = document.querySelector('.nav');
 
@@ -55,6 +61,8 @@ class TabManager {
 
     this.nav.addEventListener('change', (event) => {
       const radio = event.target;
+      console.log("change event caught in tab mang");
+      
       if (radio.tagName === 'INPUT' && radio.type === 'radio') {
         // 1) Only one radio can be checked at a time
         const allRadios = document.querySelectorAll(
@@ -216,12 +224,11 @@ class TabManager {
     title.classList.add('page-title');
     header.appendChild(title);
 
-    // "Add Todo" button -> opens modal
-    const addTodoButton = document.querySelector('.add-todo-btn');
-    addTodoButton.addEventListener('click', () => {
-      import('../components/EmbedForm.js').then(({openEmbeddedForm}) => openEmbeddedForm(this.currentTabId));
-      // import('../components/modal.js').then(({ openModal }) => openModal(this.currentTabId));
-    });
+    if (tabId === 'all-tasks' || tabId === 'overdue') {
+      this.addTodoButton.style.display = "none";
+    } else {
+      this.addTodoButton.style.display = "flex";
+    }
 
     this.contentView.appendChild(header);
 
@@ -264,7 +271,8 @@ class TabManager {
 
           const todoItem = TodoRenderer.renderTodoItem(todo, {
             showCategory: showCategory,
-            categoryName: catName
+            categoryName: catName,
+            tabId: tabId
           });
           todosList.appendChild(todoItem);
         });
