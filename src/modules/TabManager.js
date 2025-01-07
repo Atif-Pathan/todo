@@ -219,7 +219,8 @@ class TabManager {
     // "Add Todo" button -> opens modal
     const addTodoButton = document.querySelector('.add-todo-btn');
     addTodoButton.addEventListener('click', () => {
-      import('../components/modal.js').then(({ openModal }) => openModal(this.currentTabId));
+      import('../components/EmbedForm.js').then(({openEmbeddedForm}) => openEmbeddedForm(this.currentTabId));
+      // import('../components/modal.js').then(({ openModal }) => openModal(this.currentTabId));
     });
 
     this.contentView.appendChild(header);

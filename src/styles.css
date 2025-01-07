@@ -153,13 +153,15 @@ ul[role="list"] {
 
 /* Webkit-based browsers */
 .nav::-webkit-scrollbar,
-.content-view::-webkit-scrollbar {
+.content-view::-webkit-scrollbar,
+#description::-webkit-scrollbar {
   width: 10px; /* Width of the scrollbar */
   height: 10px; /* Height of the horizontal scrollbar */
 }
 
 .nav::-webkit-scrollbar-thumb,
-.content-view::-webkit-scrollbar-thumb {
+.content-view::-webkit-scrollbar-thumb,
+#description::-webkit-scrollbar-thumb {
   background: linear-gradient(
     45deg,
     var(--text-main),
@@ -170,13 +172,21 @@ ul[role="list"] {
 }
 
 .nav::-webkit-scrollbar-thumb:hover,
-.content-view::-webkit-scrollbar-thumb:hover {
+.content-view::-webkit-scrollbar-thumb:hover,
+#description::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(
     45deg,
     var(--text-accent),
     var(--text-main)
   ); /* Hover effect */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Glow effect on hover */
+  cursor: grab;
+}
+
+.nav::-webkit-scrollbar-thumb:active,
+.content-view::-webkit-scrollbar-thumb:active,
+#description::-webkit-scrollbar-thumb:active {
+  cursor: grabbing;
 }
 
 .nav::-webkit-scrollbar-track,
@@ -187,13 +197,22 @@ ul[role="list"] {
   margin-bottom: 1.5rem;
 }
 
+#description::-webkit-scrollbar-track {
+  background: #e4ebf5; /* Light background for the track */
+  border-radius: 20px;
+  margin-top: 0.5rem; /* Adds space at the top */
+  margin-bottom: 0.5rem;
+}
+
 .nav::-webkit-scrollbar-corner,
-.content-view::-webkit-scrollbar-corner {
+.content-view::-webkit-scrollbar-corner,
+#description::-webkit-scrollbar-corner {
   background: var(--bg-secondary); /* Matches background color */
 }
 
 .nav::-webkit-scrollbar-button,
-.content-view::-webkit-scrollbar-button {
+.content-view::-webkit-scrollbar-button,
+#description::-webkit-scrollbar-button {
   background: var(--text-main); /* Arrow buttons */
   border-radius: 50%; /* Rounded buttons */
   display: none;
@@ -245,7 +264,8 @@ ul[role="list"] {
 
 .collapse-btn,
 .add-category-btn,
-.add-todo-btn {
+.add-todo-btn,
+.modal-buttons button {
   outline: transparent;
   border: none;
   background-color: var(--bg-main);
@@ -265,7 +285,8 @@ ul[role="list"] {
 /* Hover Effect */
 .collapse-btn:hover,
 .add-category-btn:hover,
-.add-todo-btn:hover {
+.add-todo-btn:hover,
+.modal-buttons button:hover {
   box-shadow: 12px 12px 22px rgba(174, 189, 211, 0.9),
     -12px -12px 22px rgba(255, 255, 255, 1);
   color: var(--text-accent);
@@ -281,7 +302,8 @@ ul[role="list"] {
 /* Click Animation (Pressed-In Effect) */
 .collapse-btn:active,
 .add-category-btn:active,
-.add-todo-btn:active {
+.add-todo-btn:active,
+.modal-buttons button:active {
   box-shadow: inset 5px 5px 10px rgba(190, 205, 226, 0.7),
     /* Inset shadow for pressed effect */ inset -5px -5px 10px
       rgba(255, 255, 255, 0.8);
@@ -467,22 +489,6 @@ ul[role="list"] {
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 5px;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: space-between;
-}
-
-.modal-buttons button {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.modal-buttons button:hover {
-  background-color: #eee;
 }
 
 .add-todo-btn {
@@ -730,4 +736,150 @@ ul[role="list"] {
   margin-left: 0.5rem;
   color: #666;
   font-size: 0.9rem;
+}
+
+.embedded-form {
+  display: grid;
+  padding: 0 1rem;
+  grid-template-columns: repeat(9, 1fr);
+  grid-template-rows: repeat(3, 3.5rem);
+  grid-auto-rows: 3.5rem;
+  transition: max-height 0.5s ease-in-out;
+}
+
+.title-div {
+  grid-row: 1/2;
+  grid-column: 1/4;
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.title-div input,
+.desc-div textarea,
+.new-category-input-div input {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  outline: transparent;
+  border: none;
+  padding: 0.2rem 0.8rem;
+}
+
+.desc-div textarea {
+  overflow-y: auto;
+  resize: none;
+  padding: 0.4rem 0.6rem 0.4rem 0.8rem;
+  border-radius: 1rem;
+}
+
+.title-div input,
+.desc-div textarea,
+.due-date-div input,
+.prio-div select,
+.cat-div select,
+.new-category-input-div input:enabled {
+  box-shadow: inset 0.2rem 0.2rem 0.5rem rgba(163, 177, 198, 0.5),
+    inset -0.2rem -0.2rem 0.5rem rgba(255, 255, 255, 0.6);
+  background: #e4ebf5;
+  border: none;
+}
+
+.title-div input:focus,
+.desc-div textarea:focus,
+.due-date-div input:focus,
+.prio-div select:focus,
+.cat-div select:focus,
+.new-category-input-div input:focus {
+  box-shadow: 0.3rem 0.3rem 0.7rem rgba(163, 177, 198, 0.6),
+    -0.4rem -0.4rem 2rem rgba(255, 255, 255, 1);
+  border: 1px solid #e0e8f1;
+}
+
+.desc-div {
+  grid-row: 1/4;
+  grid-column: 4/7;
+  padding: 0.5rem;
+}
+
+.due-date-div {
+  grid-row: 2/3;
+  grid-column: 7/10;
+  padding: 0.5rem;
+  /* display: flex;
+  gap: 0.5rem; */
+}
+
+.prio-div {
+  grid-row: 1/2;
+  grid-column: 7/10;
+  padding: 0.5rem;
+}
+
+.cat-div {
+  grid-row: 2/3;
+  grid-column: 1/4;
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.due-date-div,
+.cat-div,
+.prio-div {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* gap: 1rem; */
+}
+
+.cat-div label,
+.prio-div label,
+.due-date-div label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-main);
+  width: fit-content;
+}
+
+.cat-div select,
+.prio-div select,
+.due-date-div input {
+  font-size: 1rem;
+  height: 100%;
+  padding: 0.2rem 0.8rem;
+  border-radius: 1rem;
+  outline: transparent;
+  border: none;
+  width: 66%;
+  overflow-x: auto;
+}
+
+.cat-div select {
+  padding: 0.2rem 0.4rem 0.2rem 0.8rem;
+}
+
+.new-category-input-div {
+  grid-row: 3/4;
+  grid-column: 1/4;
+  padding: 0.5rem 0.5rem 0.5rem 0;
+}
+
+.new-category-input:disabled {
+  background-color: #d2d8e0;
+  cursor: not-allowed;
+}
+
+.new-category-input:disabled::placeholder {
+  color: #bbbbbb;
+  font-weight: 300;
+}
+
+.modal-buttons {
+  grid-row: 3/4;
+  grid-column: 7/10;
+  padding: 0.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.modal-buttons button {
+  flex: 1;
 }
