@@ -1,6 +1,7 @@
 import TaskManager from './TaskManager.js';
 import StickyWall from './StickyWall.js';
 import TodoRenderer from './TodoRenderer.js';
+import categoryUIManager from './CategoryUIManager.js';
 import { isSameDay, isAfter, startOfToday, parseISO, isBefore } from 'date-fns';
 
 class TabManager {
@@ -43,9 +44,31 @@ class TabManager {
     this.renderTabContent(this.currentTabId);
 
     // Listen for global "contentUpdated" to re-render
-    document.addEventListener('contentUpdated', () => {
+    document.addEventListener("contentUpdated", (event) => {
+      const previousTabId = event.detail?.previousTabId || null; // Extract the previous tab ID
+  
+      // Re-render categories in the UI
+      categoryUIManager.renderCategories();
+  
+      // If a previous tab ID is provided, select it
+      if (previousTabId) {
+          const previousTabRadio = document.getElementById(previousTabId);
+          if (previousTabRadio) {
+              previousTabRadio.checked = true;
+  
+              // Dispatch the "change" event to trigger associated listeners
+              const changeEvent = new Event("change", { bubbles: true });
+              previousTabRadio.dispatchEvent(changeEvent);
+  
+              // Update currentTabId to reflect the newly selected tab
+              this.currentTabId = previousTabId;
+          }
+      }
+  
+      // Refresh the content view for the currentTabId
       this.renderTabContent(this.currentTabId);
     });
+  
 
     // Set up old index.js logic
     this.setupNavChangeListeners();   // The radio–button code
@@ -61,7 +84,9 @@ class TabManager {
 
     this.nav.addEventListener('change', (event) => {
       const radio = event.target;
-      console.log("change event caught in tab mang");
+      console.log(radio);
+      
+      console.log("change event triggered in setupNavChangeListeners");
       
       if (radio.tagName === 'INPUT' && radio.type === 'radio') {
         // 1) Only one radio can be checked at a time
@@ -181,6 +206,18 @@ class TabManager {
     const rawVal = this.NewCatInput.value.trim();
     if (!rawVal) return;
 
+    if (/[^a-zA-Z-_]/.test(rawVal)) { // Allow only letters, dashes, and underscores
+      alert(
+        "Invalid category name!\n\n" +
+        "Please ensure your category name meets the following requirements:\n" +
+        "- Only letters (A-Z or a-z) are allowed\n" +
+        "- Dashes (-) and underscores (_) are allowed\n" +
+        "- No spaces, numbers, or special characters\n\n" +
+        "Example of valid names: Work, Personal_Tasks, To-Do."
+      );
+      return;
+    }
+
     try {
       const catName = rawVal.charAt(0).toUpperCase() + rawVal.slice(1);
       // Create the category in the manager
@@ -224,6 +261,46 @@ class TabManager {
     title.classList.add('page-title');
     header.appendChild(title);
 
+    if (tabId.startsWith("category-") && !tabId.startsWith("category-General")) {
+      const deleteCatButton = document.createElement('button');
+      deleteCatButton.innerHTML = '<i class="fa-solid fa-trash fa-lg"></i>';
+      deleteCatButton.title = "Delete Category";
+      deleteCatButton.classList.add("delete-cat-btn");
+      deleteCatButton.addEventListener("click", () => {
+          const confirmDelete = confirm('Are you sure you want to delete this category? It will delete ALL the todos within it as well!');
+          if (confirmDelete) {
+            const categories = Array.from(document.querySelectorAll('.user-category')); // All category inputs
+            const currentIndex = categories.findIndex(category => category.id === tabId);
+            console.log(currentIndex);
+            
+    
+            if (currentIndex === -1) {
+                console.error(`Category with ID "${tabId}" not found in the list of categories.`);
+                return;
+            }
+    
+            if (currentIndex > 0) {
+              const categoryAbove = categories[currentIndex - 1];
+              const previousTabId = categoryAbove.id; // Capture the category above's ID
+              console.log("Category above selected:", previousTabId);
+          
+              this.taskManager.deleteCategory(tabId.replace("category-", ""));
+              console.log("Deleted tab ID:", tabId);
+          
+              // Trigger "contentUpdated" and pass the previousTabId
+              const contentUpdatedEvent = new CustomEvent("contentUpdated", {
+                  detail: { previousTabId },
+              });
+              document.dispatchEvent(contentUpdatedEvent);
+            } else {
+                console.log("This is the first category; no category above.");
+            }
+          
+          }  
+      });
+      header.appendChild(deleteCatButton);
+    }
+  
     if (tabId === 'all-tasks' || tabId === 'overdue') {
       this.addTodoButton.style.display = "none";
     } else {

@@ -637,8 +637,10 @@ ul[role="list"] {
 .content-header {
   display: flex;
   padding: 0 1rem;
+  gap: 1rem;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .category-grid {
@@ -721,10 +723,17 @@ ul[role="list"] {
 
 /* Title flexes to fill space */
 .todo-title {
-  flex: 1;
+  /* flex: 1; */
   font-family: var(--font-main);
   font-weight: 600;
   font-size: 1.1rem;
+  margin-right: 0.7rem;
+}
+
+.todo-desc {
+  flex: 1;
+  flex-wrap: wrap;
+  /* text-align: left; */
 }
 
 /* Priority badge styling; color-coded by priority */
@@ -760,7 +769,8 @@ ul[role="list"] {
 }
 
 .edit-todo-btn,
-.delete-todo-btn {
+.delete-todo-btn,
+.delete-cat-btn {
   display: flex;
   border: none;
   outline: transparent;
@@ -772,15 +782,24 @@ ul[role="list"] {
 }
 
 .edit-todo-btn:hover,
-.delete-todo-btn:hover {
+.delete-todo-btn:hover,
+.delete-cat-btn:hover {
   scale: 1.2;
   color: var(--text-accent);
   cursor: pointer;
 }
 
 .edit-todo-btn:active,
-.delete-todo-btn:active {
+.delete-todo-btn:active,
+.delete-cat-btn:active {
   scale: 0.95;
+}
+
+.delete-cat-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 10rem;
+  color: #777;
 }
 
 /* Minimal styling for the due date */

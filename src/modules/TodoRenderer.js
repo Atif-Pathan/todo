@@ -50,6 +50,12 @@ class TodoRenderer {
     titleLabel.textContent = todo.getTitle();
     row.appendChild(titleLabel);
 
+    // description
+    const descSpan = document.createElement('span');
+    descSpan.classList.add("todo-desc");
+    descSpan.textContent = `${todo.getDescription()}`;
+    row.appendChild(descSpan);
+
     // Priority label
     const prioritySpan = document.createElement('span');
     prioritySpan.classList.add('todo-priority', `priority-${todo.getPriority()}`);
