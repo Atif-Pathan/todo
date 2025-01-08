@@ -1,6 +1,6 @@
 import TaskManager from "../modules/TaskManager.js";
 
-export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = null, categoryName = null) {
+export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = null, categoryName = null, editPressed = false) {
 
   const row = document.querySelector(".todo-item-row");
   console.log(categoryName);
@@ -144,7 +144,9 @@ export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = 
     const createOption = document.createElement("option");
     createOption.value = "create-new";
     createOption.textContent = "Add New Category";
-    categorySelect.appendChild(createOption);
+    if (!editPressed) {
+      categorySelect.appendChild(createOption);
+    }
 
     // Figure out which category to preselect
     let preselectName = null;
@@ -246,6 +248,13 @@ export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = 
   }
 
   function handleUpdateTodo() {
+
+    if (categorySelect.options.length > 0) {
+      console.log("removed");
+      
+      const lastIndex = categorySelect.options.length - 1; // Get the index of the last option
+      categorySelect.remove(lastIndex); // Remove the last option
+    }
     // console.log("updated");
     
     const updatedDetails = {
@@ -348,5 +357,4 @@ export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = 
   }
 
   titleInput.focus();
-
 }

@@ -84,9 +84,7 @@ class TodoRenderer {
       } else if (tabId) {
         catToUpdate = tabId.replace('category-', '');  
       }
-      console.log(`${catToUpdate} is the cat to be updated`);
-      
-      import('../components/EmbedForm.js').then(({openEmbeddedForm}) => openEmbeddedForm(tabId, true, todo.getId(), catToUpdate));
+      import('../components/EmbedForm.js').then(({openEmbeddedForm}) => openEmbeddedForm(tabId, true, todo.getId(), catToUpdate, true));
 
       if (todo.getStatus() === 'overdue') {
         row.classList.add('overdue');
