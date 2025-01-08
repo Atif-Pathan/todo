@@ -28,12 +28,10 @@ body {
   --font-main: "Quicksand", sans-serif; /* For headings */
   --font-secondary: "Nunito", sans-serif; /* For body text */
   --font-heading: "Inter", sans-serif;
-  --bg-main: #e0e5ec; /* Main light gray background */
-  --bg-secondary: #dce2eb; /* Slightly darker gray for panels or sections */
-  /* --text-heading: #142347; */
-  --text-main: #232f4b; /* Dark gray for primary text */
-  --text-accent: #24569b; /* Muted blue-gray for accents */
-  /* --text-para: #213564; */
+  --bg-main: #e0e5ec;
+  --bg-secondary: #dce2eb;
+  --text-main: #232f4b;
+  --text-accent: #24569b;
   background-color: var(--bg-main);
   font-family: var(--font-secondary);
   color: var(--text-main);
@@ -133,9 +131,8 @@ ul[role="list"] {
   padding: 1.5rem;
   background-color: var(--bg-secondary);
   box-shadow: 9px 9px 20px rgba(190, 205, 226, 0.65),
-    /* Darker shadow for bottom-right */ -12px -12px 20px
-      rgba(248, 248, 248, 0.8); /* Lighter shadow for top-left */
-  border: 1px solid rgba(255, 255, 255, 0.13); /* Slightly more prominent border for definition */
+    -12px -12px 20px rgba(248, 248, 248, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.13);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -155,31 +152,23 @@ ul[role="list"] {
 .nav::-webkit-scrollbar,
 .content-view::-webkit-scrollbar,
 #description::-webkit-scrollbar {
-  width: 10px; /* Width of the scrollbar */
-  height: 10px; /* Height of the horizontal scrollbar */
+  width: 10px;
+  height: 10px;
 }
 
 .nav::-webkit-scrollbar-thumb,
 .content-view::-webkit-scrollbar-thumb,
 #description::-webkit-scrollbar-thumb {
-  background: linear-gradient(
-    45deg,
-    var(--text-main),
-    var(--text-accent)
-  ); /* Gradient thumb */
-  border-radius: 20px; /* Rounded edges for the thumb */
-  border: 2px solid var(--bg-secondary); /* Creates space around the thumb */
+  background: linear-gradient(45deg, var(--text-main), var(--text-accent));
+  border-radius: 20px;
+  border: 2px solid var(--bg-secondary);
 }
 
 .nav::-webkit-scrollbar-thumb:hover,
 .content-view::-webkit-scrollbar-thumb:hover,
 #description::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(
-    45deg,
-    var(--text-accent),
-    var(--text-main)
-  ); /* Hover effect */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Glow effect on hover */
+  background: linear-gradient(45deg, var(--text-accent), var(--text-main));
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   cursor: grab;
 }
 
@@ -191,42 +180,41 @@ ul[role="list"] {
 
 .nav::-webkit-scrollbar-track,
 .content-view::-webkit-scrollbar-track {
-  background: var(--bg-secondary); /* Light background for the track */
+  background: var(--bg-secondary);
   border-radius: 20px;
-  margin-top: 6rem; /* Adds space at the top */
+  margin-top: 6rem;
   margin-bottom: 1.5rem;
 }
 
 #description::-webkit-scrollbar-track {
-  background: #e4ebf5; /* Light background for the track */
+  background: #e4ebf5;
   border-radius: 20px;
-  margin-top: 0.5rem; /* Adds space at the top */
+  margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
 
 .nav::-webkit-scrollbar-corner,
 .content-view::-webkit-scrollbar-corner,
 #description::-webkit-scrollbar-corner {
-  background: var(--bg-secondary); /* Matches background color */
+  background: var(--bg-secondary);
 }
 
 .nav::-webkit-scrollbar-button,
 .content-view::-webkit-scrollbar-button,
 #description::-webkit-scrollbar-button {
-  background: var(--text-main); /* Arrow buttons */
-  border-radius: 50%; /* Rounded buttons */
+  background: var(--text-main);
+  border-radius: 50%;
   display: none;
 }
 
 .nav:hover {
   box-shadow: 11px 11px 24px rgba(190, 205, 226, 0.9),
-    /* Slightly stronger bottom-right shadow */ -14px -14px 22px
-      rgb(255, 255, 255); /* Slightly stronger top-left shadow */
+    -14px -14px 22px rgb(255, 255, 255);
 }
 
 .nav.collapsed {
   padding: 1.5rem 1rem;
-  width: 4.5rem; /* Shrinks the nav bar */
+  width: 4.5rem;
   min-width: 0;
 }
 
@@ -238,7 +226,7 @@ ul[role="list"] {
 .nav.collapsed .categories,
 .nav.collapsed .nav-row,
 .nav.collapsed .tasks {
-  display: none; /* Hides elements once animation completes */
+  display: none;
 }
 
 .nav.collapsed .nav-row {
@@ -268,10 +256,10 @@ ul[role="list"] {
 .modal-buttons button {
   outline: transparent;
   background-color: var(--bg-main);
-  border-radius: 1rem; /* Make it circular */
+  border-radius: 1rem;
   /* Neumorphic Raised Shadow */
   box-shadow: 9px 9px 17px rgba(167, 180, 199, 0.5),
-    /* Darker shadow for bottom-right */ -8px -8px 17px rgba(248, 248, 248, 0.7); /* Lighter shadow for top-left */
+    -8px -8px 17px rgba(248, 248, 248, 0.7);
   transition: all 200ms ease-in-out;
   border: 1px solid rgba(214, 214, 214, 0.432);
   cursor: pointer;
@@ -281,7 +269,6 @@ ul[role="list"] {
   justify-content: center;
 }
 
-/* Hover Effect */
 .collapse-btn:hover,
 .add-category-btn:hover,
 .add-todo-btn:hover,
@@ -305,9 +292,8 @@ ul[role="list"] {
 .add-todo-btn:active,
 .modal-buttons button:active {
   box-shadow: inset 5px 5px 10px rgba(190, 205, 226, 0.7),
-    /* Inset shadow for pressed effect */ inset -5px -5px 10px
-      rgba(255, 255, 255, 0.8);
-  transform: scale(0.95); /* Slightly shrink the button */
+    inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+  transform: scale(0.95);
   color: var(--text-accent);
 }
 
@@ -344,10 +330,6 @@ ul[role="list"] {
   font-size: 0.95rem;
   height: 1.5rem;
 }
-
-/***************************************************
- * TASKS AND CATEGORIES SEGMENTED CONTROLS
- ***************************************************/
 
 /* General segmented control styling */
 .segmented-control.vertical {
@@ -416,7 +398,6 @@ ul[role="list"] {
   flex: 1;
   position: relative;
   gap: 0.5rem;
-  /* padding-top: 0.5rem; */
 }
 
 .inset-bg {
@@ -425,70 +406,20 @@ ul[role="list"] {
   top: 10rem;
   width: calc(100% - 3rem);
   height: 2.5rem;
-  /* height: calc(100% / 10); Adjust if needed */
   box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
     inset -4px -4px 8px rgba(255, 255, 255, 0.5);
   border-radius: 0.5rem;
   background: #e4ebf5;
-  opacity: 1; /* Hidden by default */
+  opacity: 1;
   transition: all 0.3s ease, opacity 0.4s ease;
   z-index: 1;
 }
 
-/* Add Category Button */
 .add-category-btn {
   position: absolute;
   right: 0;
   top: -0.25rem;
   padding: 0.7rem 0.8rem;
-  /* border: 1px solid black; */
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-  position: relative;
-  background: white;
-  border-radius: 10px;
-  padding: 2rem;
-  max-width: 400px;
-  width: 90%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  z-index: 1001;
-}
-
-.modal-content label {
-  font-weight: bold;
-}
-
-.modal-content input,
-.modal-content textarea,
-.modal-content select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
 }
 
 .add-todo-btn {
@@ -528,7 +459,6 @@ ul[role="list"] {
 
 .content-view {
   overflow-y: auto;
-  /* background-color: #007bff; */
   flex: 1;
 }
 
@@ -546,17 +476,16 @@ ul[role="list"] {
   max-height: 0;
   width: 100%;
   opacity: 0;
-  /* height: 2.5rem; */
   box-shadow: inset 4px 4px 8px rgba(163, 177, 198, 0.6),
     inset -4px -4px 8px rgba(255, 255, 255, 0.5);
   background: #e4ebf5;
 }
 
 .add-category-input.open {
-  display: flex; /* Allow it to be rendered */
+  display: flex;
   height: 2.5rem;
-  max-height: 2.5rem; /* Adjust to your content's full height */
-  opacity: 1; /* Fully visible */
+  max-height: 2.5rem;
+  opacity: 1;
 }
 
 #add-new-category {
@@ -564,7 +493,6 @@ ul[role="list"] {
   border: none;
   padding: 0 0 0 1rem;
   background-color: transparent;
-  /* border: 1px solid black; */
   height: 100%;
   width: 83%;
   color: #232f4b;
@@ -580,22 +508,21 @@ ul[role="list"] {
   align-items: center;
   justify-content: center;
   background-color: transparent;
-  /* border: 1px solid black; */
   height: 100%;
   width: 17%;
 }
 
 .category-sticky-note {
   background-color: #fbffc6; /* Light yellow sticky note color */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow for 3D effect */
-  padding: 16px;
-  width: 100%; /* Flexible width for the sticky note */
-  height: 100%; /* Flexible height based on content */
-  font-family: "Comic Sans MS", cursive, sans-serif; /* Playful sticky note font */
-  color: #333; /* Text color for readability */
-  overflow-wrap: break-word; /* Handle long words or text wrapping */
-  transition: transform 0.2s, box-shadow 0.2s; /* Animation for hover effect */
+  border-radius: 8px;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  width: 100%;
+  height: 100%;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  color: #333;
+  overflow-wrap: break-word;
+  transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
 
@@ -611,27 +538,26 @@ ul[role="list"] {
 }
 
 .category-task-list {
-  font-size: 14px;
-  margin-bottom: 8px;
-  color: #555; /* Slightly lighter color for task descriptions */
-  padding-left: 16px; /* Indentation for the task list */
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+  padding-left: 1rem;
 }
 
 .category-task-list li {
-  list-style-type: disc; /* Display bullet points */
+  list-style-type: disc;
 }
 
 .empty-category-message {
-  font-size: 14px;
-  margin-top: 8px;
-  color: #777; /* Slightly muted color for empty message */
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #777;
 }
 
 .content-view {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
 .content-header {
@@ -647,9 +573,9 @@ ul[role="list"] {
   display: grid;
   padding: 0.4rem 1rem 1rem 1rem;
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
-  gap: 1rem; /* Spacing between the sticky notes */
-  justify-items: center; /* Align sticky notes in the center */
-  align-items: start; /* Align sticky notes to the top */
+  gap: 1rem;
+  justify-items: center;
+  align-items: start;
   overflow-y: auto;
 }
 
@@ -658,7 +584,6 @@ ul[role="list"] {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* grid-column: 1 / -1;  */
   text-align: center;
   font-size: 1.3rem;
   color: #8091ac;
@@ -670,7 +595,6 @@ ul[role="list"] {
   top: 43%;
   left: 50%;
   transform: translate(-50%, -50%);
-  /* grid-column: 1 / -1;  */
   text-align: center;
   font-size: 1.3rem;
   color: #8091ac;
@@ -681,7 +605,7 @@ ul[role="list"] {
   position: relative;
   display: flex;
   height: 100%;
-  padding: 0 1rem;
+  padding: 1rem 1rem 0 1rem;
   flex-direction: column;
   overflow-y: auto;
 }
@@ -694,78 +618,111 @@ ul[role="list"] {
   gap: 0.5rem;
   border-bottom: 1px solid #ccc;
   transition: background-color 0.2s ease;
-  /* justify-content: space-between; */
 }
 
 /* Completed tasks get strikethrough and slight fade */
 .todo-item-row.completed {
+  opacity: 0.6; /* Reduces opacity */
+  transition: opacity 0.3s ease, text-decoration 0.3s ease; /* Smooth transitions for changes */
+}
+
+.todo-item-row.completed .todo-title,
+.todo-item-row.completed .todo-desc,
+.todo-item-row.completed .todo-priority,
+.todo-item-row.completed .todo-due-date,
+.todo-item-row.completed .todo-category-badge {
   text-decoration: line-through;
-  opacity: 0.6;
+  text-decoration-thickness: 2px;
+  text-decoration-color: #003c91;
 }
 
-/* Overdue highlight (optional) */
+/* Overdue highlight */
 .todo-item-row.overdue {
-  background-color: #ffe6e6; /* light red tint, for example */
+  background-color: #ffe6e6;
 }
 
-/* Small gap for the checkbox */
 .todo-checkbox {
-  width: 1.1rem;
-  height: 1.1rem;
+  display: none;
 }
 
-.todo-checkbox:checked {
-  /* box-shadow: inset 0.2rem 0.2rem 0.5rem rgba(163, 177, 198, 0.5),
-    inset -0.2rem -0.2rem 0.5rem rgba(255, 255, 255, 0.6);
+.todo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease;
+}
+
+.checkbox-icon {
+  box-shadow: 0.3rem 0.3rem 0.7rem rgba(163, 177, 198, 0.6),
+    -0.4rem -0.4rem 2rem rgba(255, 255, 255, 1);
   background: #e4ebf5;
-  border: none; */
+  border: 1px solid #e0e8f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.5rem;
+  width: 1.8rem;
+  height: 1.8rem;
+  transition: all 0.3s ease;
+  font-size: 1.2rem;
+  color: #bdc3d4;
 }
 
-/* Title flexes to fill space */
+.todo-label:hover .checkbox-icon {
+  color: var(--text-accent);
+}
+
 .todo-title {
-  /* flex: 1; */
   font-family: var(--font-main);
-  font-weight: 600;
+  font-weight: 700;
   font-size: 1.1rem;
   margin-right: 0.7rem;
+  margin-left: 0.4rem;
+  transition: color 0.3s ease;
+}
+
+.todo-label:hover .todo-title {
+  color: var(--text-accent);
+}
+
+.todo-checkbox:checked + .todo-label .checkbox-icon {
+  box-shadow: inset 0.2rem 0.2rem 0.5rem rgba(163, 177, 198, 0.5),
+    inset -0.2rem -0.2rem 0.5rem rgba(255, 255, 255, 0.6);
+  color: var(--text-accent);
 }
 
 .todo-desc {
   flex: 1;
   flex-wrap: wrap;
-  /* text-align: left; */
 }
 
-/* Priority badge styling; color-coded by priority */
 .todo-priority {
-  /* margin-left: 0.5rem; */
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
-  font-weight: 600;
-  font-size: 0.8rem;
+  padding: 0.1rem 0.6rem;
+  border-radius: 0.3rem;
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 .todo-priority.priority-low {
   background: #3db37f;
   color: #fff;
 }
 .todo-priority.priority-medium {
-  /* background-color: #f5e3a9; */
   background: #f0db4f;
   color: #000;
 }
 .todo-priority.priority-high {
-  /* background-color: #f0a3a9; */
   background: #db4e6a;
   color: #fff;
 }
 
-/* Category badge if shown in "global" tabs */
 .todo-category-badge {
-  /* margin-left: 0.5rem; */
-  padding: 0.2rem 0.4rem;
-  border-radius: 3px;
+  padding: 0.1rem 0.6rem;
+  border-radius: 0.3rem;
   background-color: #b8d9ff;
-  font-size: 0.8rem;
+  color: var(--text-accent);
+  font-weight: 700;
+  font-size: 1.05rem;
 }
 
 .edit-todo-btn,
@@ -787,6 +744,7 @@ ul[role="list"] {
   scale: 1.2;
   color: var(--text-accent);
   cursor: pointer;
+  opacity: 1;
 }
 
 .edit-todo-btn:active,
@@ -802,11 +760,10 @@ ul[role="list"] {
   color: #777;
 }
 
-/* Minimal styling for the due date */
 .todo-due-date {
-  /* margin-left: 0.5rem; */
-  color: #666;
-  font-size: 0.9rem;
+  color: #3f3f3f;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .embedded-form {
@@ -879,8 +836,6 @@ ul[role="list"] {
   grid-row: 2/3;
   grid-column: 7/10;
   padding: 0.5rem;
-  /* display: flex;
-  gap: 0.5rem; */
 }
 
 .prio-div {
@@ -902,7 +857,6 @@ ul[role="list"] {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* gap: 1rem; */
 }
 
 .cat-div label,
@@ -930,7 +884,6 @@ ul[role="list"] {
 .sort-btn,
 .filter-btn {
   font-size: 1rem;
-  /* height: 100%; */
   padding: 0.2rem 0.8rem;
   border-radius: 1rem;
   outline: transparent;

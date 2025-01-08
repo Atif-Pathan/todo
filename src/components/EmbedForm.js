@@ -248,7 +248,7 @@ export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = 
   }
 
   function handleUpdateTodo() {
-
+    const currCat = categorySelect.value;
     if (categorySelect.options.length > 0) {
       console.log("removed");
       
@@ -270,11 +270,14 @@ export function openEmbeddedForm(currentTabId = null, editRow = false, todoId = 
     console.log(categoryName);
     console.log(currentTabId);
     // then move if needed
-    if (categorySelect.value !== categoryName) {
+    if (currCat !== categoryName) {
+      console.log(currCat);
+      console.log(categoryName);
+      
       // need to update category/ move todo
       // throw new Error("error, cant change category");
-      TaskManager.moveTodo(todoId, categoryName, categorySelect.value);
-      console.log(`moved todo from ${categoryName} to ${categorySelect.value}`);
+      TaskManager.moveTodo(todoId, categoryName, currCat);
+      console.log(`moved todo from ${categoryName} to ${currCat}`);
     }   
     if ((categoryName !== "upcoming" || categoryName !== "today") && categoryName === currentTabId.replace('category-', '')) {
       const radioId = `category-${categoryName}`;

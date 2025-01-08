@@ -26,11 +26,11 @@ class TodoRenderer {
     }
 
     // Checkbox to toggle complete/incomplete
+    // Create checkbox input
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.classList.add('todo-checkbox');
     checkbox.id = `todo-item-${todo.getId()}`;
-    // If the current status is 'complete', check the box
     checkbox.checked = (todo.getStatus() === 'complete');
     checkbox.addEventListener('change', () => {
       if (checkbox.checked) {
@@ -39,16 +39,30 @@ class TodoRenderer {
         todo.setStatus('incomplete');
       }
       // The 'setStatus' call should handle dispatching 'contentUpdated'
-      // and also your localStorage save, if implemented that way.
     });
-    row.appendChild(checkbox);
 
-    // Title
-    const titleLabel = document.createElement('label');
-    titleLabel.classList.add('todo-title');
-    titleLabel.htmlFor = `todo-item-${todo.getId()}`;
-    titleLabel.textContent = todo.getTitle();
-    row.appendChild(titleLabel);
+    // Create a label to wrap both icon and title
+    const label = document.createElement('label');
+    label.classList.add('todo-label');
+    label.htmlFor = `todo-item-${todo.getId()}`; // Connects the label to the checkbox
+
+    // Create the icon element
+    const icon = document.createElement('i');
+    icon.classList.add('fa-solid', 'fa-check', 'checkbox-icon');
+
+    // Create the title span (task title)
+    const titleSpan = document.createElement('span');
+    titleSpan.classList.add('todo-title');
+    titleSpan.textContent = todo.getTitle();
+
+    // Append icon and title to the label
+    label.appendChild(icon);
+    label.appendChild(titleSpan);
+
+    // Append elements to the row
+    row.appendChild(checkbox); // Hidden checkbox
+    row.appendChild(label);    // Label containing both icon and title
+
 
     // description
     const descSpan = document.createElement('span');

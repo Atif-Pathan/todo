@@ -84,10 +84,6 @@ class TaskManager {
   }
 
   createCategory(name) {
-    // if (/[^a-zA-Z-_]/.test(name)) {
-    //   console.warn();
-    //   throw new Error("Invalid category name detected in createCategory. Ignoring invalid input.");
-    // }
     if (
       this.categories.find((cat) => cat.name.toLowerCase() === name.toLowerCase())
     ) {
